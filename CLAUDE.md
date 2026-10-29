@@ -4,74 +4,55 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-"Symbolic Tank Warfare by Gemdori" — a minimalist 2D symbol-style top-down tank
-game. React 19 + TypeScript + Vite. Originally scaffolded from a Google AI
-Studio app. UI text and AI commentary are in Korean.
+"STEEL SIEGE — Arsenal Tank Survival" — a 20-level top-down tank survival game
+in a single self-contained file: `Tank Battle (standalone).html` (HTML + CSS +
+vanilla JS, Canvas 2D, Web Audio). UI text is Korean. No build step, no
+dependencies beyond Google Fonts.
 
-## Commands
+The `*-handoff.zip` is the original design-tool export the file came from; it is
+reference only.
 
-```bash
-npm install      # install deps
-npm run dev      # Vite dev server on port 3000, host 0.0.0.0
-npm run build    # production build
-npm run preview  # preview built output
-```
+## Running
 
-There is no test suite, linter, or formatter configured.
+Open the HTML file directly, or serve the folder (e.g. `npx http-server -p 8765`)
+— Playwright blocks `file://`. There is no test suite, linter, or formatter.
 
-### Environment
+`window.__SS` is a debug hook: `__SS.jump(level, mkAll)` starts a level with all
+weapons at the given Mk, `__SS.select(i)` switches weapon, `__SS.info()` dumps
+state, `__SS.G` is the raw game state.
 
-Set `GEMINI_API_KEY` in `.env.local`. `vite.config.ts` maps it to both
-`process.env.API_KEY` and `process.env.GEMINI_API_KEY` at build time via
-`define`. Without it the Gemini advice feature degrades gracefully (returns
-canned fallback strings) but the game runs fine.
+## Architecture (all inside one IIFE in the `<script>` tag)
 
-## Architecture
+- **Canvas layout** — 960×700: top `HUD` band (46px), play field down to `H`
+  (640), bottom `BAR` (60px) weapon-slot strip drawn by `renderBar()`. Gameplay
+  bounds use `HUD`..`H`.
+- **State** — everything lives in the single `G` object (arrays for enemies,
+  bullets, ebullets, beams, shells, vortices, drones, bolts, strikes, pulses,
+  particles, toasts). `G.up` holds run-long upgrades (`mk[]` per weapon, maxHp,
+  maxEn, regen, armor, speed, fireRate, repair, dashCd).
+- **Loop** — `loop()` → `update(dt)` (only while `G.screen === 'playing'`) →
+  `render()`. Overlays (`ov-start/clear/over/win/pause`) are DOM, toggled by
+  `setScreen()`.
+- **Player weapons** — `WEAPONS` table (10 entries, unlock level, EN cost,
+  cooldown, Mk descriptions). Firing logic is the `switch` in `playerFire()`;
+  laser is continuous (cost per second), railgun charges while held and fires
+  in `releaseRail()`. Each special weapon has its own update/draw pair
+  (`updateShells`/`drawShells`, `updateVortices`, `updateDrones`,
+  `updateStrikes`, EMP via `G.pulses`, tesla via `teslaChain`/`G.bolts`).
+- **Enemies** — `ENEMY` table: each type has a fixed `weapon` and a `from`
+  level. `enemyFire()` switches on weapon; bosses (every 5 levels) use
+  `bossAttack()` with patterns that grow with level. Shield tanks block frontal
+  hits (`shieldBlocks`), jammers drain EN, carriers spawn `kami` minions
+  (minions don't count toward level clear).
+- **Progression** — `setupLevel()` unlocks/announces weapons, `onLevelClear()`
+  → `rollCards()` (3 upgrade cards, at least one weapon Mk card) →
+  `pickCard()` → next level.
 
-The game splits cleanly into a thin React UI shell and a self-contained
-imperative game engine.
+## Gotchas
 
-- **`App.tsx`** — top-level screen state machine only (`START` / `PLAYING` /
-  `GAMEOVER`, from `GameStatus` in `types.ts`). Renders overlay menus and
-  forwards mobile input down via refs. It does **not** drive the simulation.
-
-- **`components/GameCanvas.tsx`** — the entire game engine. This is the file to
-  read first. Key design point: the simulation runs on `requestAnimationFrame`
-  and keeps all mutable game data (`playerRef`, `enemiesRef`, `bulletsRef`,
-  `particlesRef`, `itemsRef`, `keysRef`, `mouseRef`, `levelRef`) in `useRef`
-  — **not** React state — to avoid re-renders per frame. The loop is
-  `update()` (physics, AI, collisions, spawning, level-up) then `draw()` /
-  `drawUI()` (Canvas 2D rendering, including the in-canvas HUD). State changes
-  surface to React only through the `onGameOver` / `onLevelUp` /
-  `onScoreUpdate` callbacks. When editing gameplay, mutate the refs inside
-  `update()`; don't introduce per-frame `setState`.
-
-- **`components/MobileControls.tsx`** — virtual joystick (movement) + fire
-  button. Reports via `onMove`/`onFire` callbacks; App stores them in
-  `mobileMoveRef`/`mobileFireRef` and passes the refs into GameCanvas.
-
-- **`services/geminiService.ts`** — `getGemdoriAdvice()` calls `@google/genai`
-  (model `gemini-3-flash-preview`) to generate the in-character "겜돌이"
-  (Gemdori) coach commentary. Always wrapped in try/catch with Korean fallback
-  strings.
-
-- **`services/soundService.ts`** — `soundManager` singleton synthesizes all SFX
-  via the Web Audio API (`playTone`); no audio asset files.
-
-- **`constants.ts`** — central gameplay tuning (canvas size, speeds, radii,
-  cooldowns, `COLORS` palette). Adjust balance here.
-
-- **`types.ts`** — shared domain types (`Entity`, `Tank`, `Bullet`, `Particle`,
-  `GameState`, `GameStatus`).
-
-## Conventions / gotchas
-
-- Tailwind is loaded at runtime via CDN `<script>` in `index.html` (plus a
-  CDN font and Font Awesome) — it is **not** part of the build. Utility classes
-  work without any Tailwind config file.
-- `index.html` also declares an `importmap` pointing React / `@google/genai` at
-  esm.sh; the bundled `package.json` deps mirror those versions. Keep versions
-  in sync if you change one.
-- Canvas internal resolution is `CANVAS_WIDTH`×`CANVAS_HEIGHT` (800×1000); the
-  top `UI_HEIGHT` (75px) band is reserved for the in-canvas HUD drawn by
-  `drawUI()`.
+- Never replace `G.ebullets`/`G.bullets` etc. with a new array from code that
+  can run inside their update loops (e.g. via `damagePlayer` → `playerDeath`);
+  clear with `.length = 0`.
+- Damage values can be fractional (laser, swirl apply `dps * dt`).
+- Tuning lives in the `WEAPONS`/`ENEMY` tables, `powerMul()` (player damage
+  scaling per level) and the HP/damage multipliers in `makeEnemy()`.

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>STEEL SIEGE — 20-Level Tank Survival</title>
+<title>STEEL SIEGE — Arsenal Tank Survival</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -24,80 +24,87 @@
     position:relative;width:96vw;max-width:960px;border:1px solid rgba(53,224,216,.28);border-radius:10px;overflow:hidden;
     box-shadow:0 0 0 1px rgba(0,0,0,.6),0 24px 70px rgba(0,0,0,.6),0 0 60px rgba(53,224,216,.08);background:#0b0e14;
   }
-  canvas{display:block;width:100%;height:auto;background:#0b0e14;}
+  canvas{display:block;width:100%;height:auto;background:#0b0e14;cursor:crosshair;}
   .fxscan{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(to bottom,rgba(0,0,0,0) 0px,rgba(0,0,0,0) 2px,rgba(0,0,0,.10) 3px);mix-blend-mode:multiply;}
   .fxvig{position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 120px rgba(0,0,0,.6);}
   .ov{
     position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;
-    gap:18px;padding:24px;text-align:center;backdrop-filter:blur(3px);animation:ovpop .25s ease;
+    gap:16px;padding:20px;text-align:center;backdrop-filter:blur(3px);animation:ovpop .25s ease;overflow-y:auto;
   }
   .ov.show{display:flex;}
-  .ov.start,.ov.clear,.ov.win{background:rgba(5,7,12,.82);}
-  .ov.over{background:rgba(9,4,6,.84);}
+  .ov.start,.ov.clear,.ov.win{background:rgba(5,7,12,.86);}
+  .ov.over{background:rgba(9,4,6,.86);}
   .ov.pause{background:rgba(5,7,12,.7);}
   .logo{font-family:'Press Start 2P',monospace;font-size:clamp(18px,4vw,34px);color:#fff;text-shadow:0 0 20px rgba(53,224,216,.6);line-height:1.5;}
-  .ctrl{max-width:560px;display:grid;grid-template-columns:auto 1fr;gap:8px 18px;font-size:15px;color:#aab4c2;justify-content:center;align-items:center;}
+  .ctrl{max-width:620px;display:grid;grid-template-columns:auto 1fr auto 1fr;gap:6px 14px;font-size:14px;color:#aab4c2;justify-content:center;align-items:center;text-align:left;}
   .ctrl b{color:#35e0d8;font-weight:600;text-align:right;}
-  .hint{font-size:13px;color:#6b7688;max-width:560px;line-height:1.6;}
-  .weapon-list{font-size:12px;color:#7a8799;max-width:560px;line-height:1.7;text-align:left;}
-  .weapon-list span{color:#9fb0c0;}
+  .hint{font-size:13px;color:#6b7688;max-width:600px;line-height:1.6;}
+  .roster{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;max-width:640px;width:100%;}
+  .roster div{font-size:11px;color:#8b98aa;border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:5px 4px;line-height:1.35;}
+  .roster div i{display:block;font-style:normal;font-weight:700;font-size:12px;}
   button.btn{
     cursor:pointer;font-family:'Press Start 2P',monospace;font-size:14px;letter-spacing:1px;color:#05070c;
     border:none;border-radius:8px;padding:15px 30px;
   }
   button.cyan{background:#35e0d8;box-shadow:0 0 30px rgba(53,224,216,.5);animation:floaty 2.4s ease-in-out infinite;}
-  button.green{background:#7dff9e;box-shadow:0 0 26px rgba(125,255,158,.45);}
   button.red{background:#ff4d5e;box-shadow:0 0 26px rgba(255,77,94,.45);}
   button.gold{background:#ffd23f;box-shadow:0 0 26px rgba(255,210,63,.45);}
   .foot{font-size:13px;color:#586173;letter-spacing:1px;text-align:center;}
   .lbl{font-size:14px;letter-spacing:4px;text-transform:uppercase;}
   .stat{font-size:12px;color:#6b7688;letter-spacing:2px;}
-  .statv{font-size:26px;color:#fff;font-weight:700;}
+  .statv{font-size:24px;color:#fff;font-weight:700;}
   .row{display:flex;gap:34px;flex-wrap:wrap;justify-content:center;}
+  .unlock{font-size:14px;color:#ffd23f;min-height:20px;}
+  .cards{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;}
+  .card{
+    cursor:pointer;width:200px;min-height:150px;padding:14px 12px;border-radius:10px;text-align:left;
+    background:rgba(16,22,32,.95);border:1px solid rgba(53,224,216,.25);color:#cfd8e3;font-family:inherit;
+    display:flex;flex-direction:column;gap:6px;transition:transform .12s,border-color .12s,box-shadow .12s;
+  }
+  .card:hover,.card:focus{transform:translateY(-4px);border-color:#35e0d8;box-shadow:0 0 24px rgba(53,224,216,.3);outline:none;}
+  .card .k{font-size:11px;color:#6b7688;letter-spacing:2px;}
+  .card .t{font-size:16px;font-weight:700;}
+  .card .d{font-size:13px;color:#9fb0c0;line-height:1.45;}
+  .card .tag{font-size:10px;letter-spacing:2px;text-transform:uppercase;}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="title-row">
     <div class="brand">STEEL SIEGE</div>
-    <div class="sub">20-Level Tank Survival</div>
+    <div class="sub">Arsenal Tank Survival</div>
   </div>
 
   <div class="stage">
-    <canvas id="ss-canvas" width="960" height="640"></canvas>
+    <canvas id="ss-canvas" width="960" height="700"></canvas>
     <div class="fxscan"></div>
     <div class="fxvig"></div>
 
     <div id="ov-start" class="ov start show">
       <div class="logo">STEEL<br>SIEGE</div>
       <div class="ctrl">
-        <b>방향키 / WASD</b><div>이동 · 조준</div>
-        <b>스페이스</b><div>발사 (누르면 연사)</div>
+        <b>WASD / 방향키</b><div>차체 이동</div>
+        <b>마우스</b><div>포탑 조준</div>
+        <b>클릭 / SPACE</b><div>발사 (홀드 연사)</div>
+        <b>SHIFT / 우클릭</b><div>대시 (순간 무적)</div>
+        <b>1–0 / Q·E / 휠</b><div>무기 교체</div>
         <b>P / ESC</b><div>일시정지</div>
       </div>
-      <div class="hint">레벨이 오를수록 <b style="color:#35e0d8">나와 적의 무기</b>가 함께 업그레이드됩니다.<br>파워업(♥ 체력 · ★ 무기+1)을 주워 20레벨까지 돌파하세요.</div>
-      <div class="weapon-list">
-        <span>1–3</span> 포 1문 ·
-        <span>4–6</span> 포 2문 ·
-        <span>7–9</span> 연사 ·
-        <span>10–12</span> 레이저 ·
-        <span>13–15</span> SWARM ·
-        <span>16–18</span> 추적 미사일 ·
-        <span>19</span> RAILCORE ·
-        <span>20</span> OMEGA
-      </div>
+      <div class="hint">레벨이 오를 때마다 <b style="color:#35e0d8">새 무기</b>가 해금되고, 섹터를 돌파하면 <b style="color:#ffd23f">업그레이드 카드</b>를 고릅니다.<br>특수 무기는 에너지(EN)를 씁니다. 상황에 맞춰 무기를 바꿔 가며 20섹터를 돌파하세요.</div>
+      <div class="roster" id="roster"></div>
       <button class="btn cyan" id="btn-start">▶ START</button>
     </div>
 
     <div id="ov-clear" class="ov clear">
       <div class="lbl" style="color:#7dff9e;">Sector Cleared</div>
-      <div class="logo" id="clear-level">LEVEL 1</div>
+      <div class="logo" id="clear-level" style="font-size:26px;">LEVEL 1</div>
       <div class="row">
         <div><div class="stat">CLEAR BONUS</div><div class="statv" style="color:#ffd23f;" id="clear-bonus">+0</div></div>
         <div><div class="stat">SCORE</div><div class="statv" id="clear-score">0</div></div>
-        <div><div class="stat">NEXT WEAPON</div><div class="statv" style="color:#35e0d8;font-size:18px;" id="clear-weapon">—</div></div>
       </div>
-      <button class="btn green" id="btn-next">LEVEL 2 ▶</button>
+      <div class="unlock" id="clear-unlock"></div>
+      <div class="lbl" style="color:#9fb0c0;font-size:12px;letter-spacing:1px;">업그레이드 선택 · 1 / 2 / 3</div>
+      <div class="cards" id="cards"></div>
     </div>
 
     <div id="ov-over" class="ov over">
@@ -123,66 +130,76 @@
     </div>
   </div>
 
-  <div class="foot">방향키/WASD 이동 · SPACE 발사 · P 일시정지</div>
+  <div class="foot">WASD 이동 · 마우스 조준 · 클릭/SPACE 발사 · SHIFT 대시 · 1–0/Q/E 무기 · P 일시정지</div>
 </div>
 
 <script>
 (() => {
   const canvas = document.getElementById('ss-canvas');
   const ctx = canvas.getContext('2d');
-  const W = 960, H = 640, HUD = 46;
-
-  /** 레벨 → 무기 티어 (1~8). 나와 적 공통. */
-  function tierForLevel(level) {
-    if (level <= 3) return 1;
-    if (level <= 6) return 2;
-    if (level <= 9) return 3;
-    if (level <= 12) return 4;
-    if (level <= 15) return 5;
-    if (level <= 18) return 6;
-    if (level === 19) return 7;
-    return 8;
-  }
+  // HUD: 상단 정보 띠, H: 전장 하단 경계, BAR: 하단 무기 슬롯 띠
+  const W = 960, H = 640, HUD = 46, BAR = 60;
+  const TAU = Math.PI * 2;
 
   /**
-   * 1 CANNON  포 1문
-   * 2 DUAL    포 2문 동시
-   * 3 RAPID   연사
-   * 4 LASER   히트스캔 레이저
-   * 5 SWARM   소형 탄막
-   * 6 MISSILE 추적 미사일
-   * 7 RAILCORE (19) 쌍열 관통 레이저
-   * 8 OMEGA   (20) 레이저 + 쌍 미사일
+   * 플레이어 무기 10종. unlock = 해금 레벨, cost = 에너지(EN) 소모, mk = Mk I~III 강화 단계.
+   * kind별 발사 로직은 playerFire()에, 강화 효과는 mkDesc와 각 발사 함수에 있다.
    */
   const WEAPONS = [
-    null,
-    { id:'cannon',  name:'CANNON',  fireCd:0.48, bSpeed:360, dmg:1, color:'#8becff', kind:'bullet', shots:1 },
-    { id:'dual',    name:'DUAL',    fireCd:0.40, bSpeed:380, dmg:1, color:'#7dff9e', kind:'bullet', shots:2 },
-    { id:'rapid',   name:'RAPID',   fireCd:0.15, bSpeed:430, dmg:1, color:'#8becff', kind:'bullet', shots:1 },
-    { id:'laser',   name:'LASER',   fireCd:0.32, bSpeed:0,   dmg:2, color:'#ff6bff', kind:'laser', pierce:false, range:920, width:3 },
-    { id:'swarm',   name:'SWARM',   fireCd:0.52, bSpeed:290, dmg:1, color:'#ffd23f', kind:'swarm', count:7, spread:0.55, softHome:true },
-    { id:'missile', name:'MISSILE', fireCd:0.58, bSpeed:250, dmg:3, color:'#ff5b6b', kind:'missile', shots:1, turn:4.2 },
-    { id:'railcore',name:'RAILCORE',fireCd:0.28, bSpeed:0,   dmg:3, color:'#7cf7ff', kind:'laser', pierce:true, range:980, width:4, dual:true },
-    { id:'omega',   name:'OMEGA',   fireCd:0.46, bSpeed:280, dmg:3, color:'#ffd23f', kind:'omega', laserDmg:3, missileDmg:3, turn:3.8 },
+    { id:'cannon',  key:'1', name:'CANNON',  short:'CANNON', unlock:1,  cost:0,  cd:0.40, color:'#8becff',
+      desc:'기본 주포. 에너지 무소모.', mkDesc:['연사 +20% · 포 2문', '연사 +20% · 포 3문'] },
+    { id:'scatter', key:'2', name:'SCATTER', short:'SCATTER',unlock:2,  cost:9,  cd:0.62, color:'#ffb14d',
+      desc:'근거리 산탄. 적을 밀어낸다.', mkDesc:['탄환 +3', '탄환 +3 · 관통'] },
+    { id:'mortar',  key:'3', name:'MORTAR',  short:'MORTAR', unlock:4,  cost:15, cd:0.85, color:'#ff8a5b',
+      desc:'조준점에 곡사. 벽을 넘어간다.', mkDesc:['폭발 반경·피해 +', '집속탄 3발'] },
+    { id:'tesla',   key:'4', name:'TESLA',   short:'TESLA',  unlock:6,  cost:11, cd:0.45, color:'#9ad8ff',
+      desc:'연쇄 번개. 적 사이를 튄다.', mkDesc:['연쇄 +2', '연쇄 +2 · 감전 둔화'] },
+    { id:'laser',   key:'5', name:'LASER',   short:'LASER',  unlock:8,  cost:28, cd:0,    color:'#ff6bff',
+      desc:'지속 빔. 누르는 동안 EN 소모(초당).', mkDesc:['피해 +40%', '관통 빔'] },
+    { id:'swirl',   key:'6', name:'SWIRL',   short:'SWIRL',  unlock:10, cost:30, cd:1.1,  color:'#b388ff',
+      desc:'소용돌이 구체. 적과 탄을 빨아들이고 붕괴.', mkDesc:['흡인 반경 +', '붕괴 시 분열'] },
+    { id:'emp',     key:'7', name:'EMP',     short:'EMP',    unlock:12, cost:42, cd:2.6,  color:'#5ad1ff',
+      desc:'전자기 펄스. 적 기절·탄 소거·실드 파괴.', mkDesc:['반경 +', '기절 시간 +'] },
+    { id:'drone',   key:'8', name:'DRONE',   short:'DRONE',  unlock:14, cost:45, cd:1.6,  color:'#7dff9e',
+      desc:'폭격 드론 출격. 유도 폭탄 투하.', mkDesc:['지속 시간 +', '드론 +1'] },
+    { id:'rail',    key:'9', name:'RAILGUN', short:'RAIL',   unlock:16, cost:26, cd:0.5,  color:'#7cf7ff',
+      desc:'홀드 충전 후 발사. 벽까지 관통.', mkDesc:['충전 속도 +', '피해 +50%'] },
+    { id:'orbital', key:'0', name:'ORBITAL', short:'ORBITAL',unlock:18, cost:70, cd:3.5,  color:'#ffd23f',
+      desc:'위성 포격. 조준점에 궤도 빔 낙하.', mkDesc:['반경 +', '연속 3회 포격'] },
   ];
+  const WIDX = {}; WEAPONS.forEach((w, i) => WIDX[w.id] = i);
 
-  const enemyBase = {
-    grunt:  {hp:3, speed:66,  size:26, fireCd:1.7, bSpeed:205, dmg:9,  score:100, aimErr:0.30, color:'#ff5b6b', range:520},
-    scout:  {hp:2, speed:132, size:22, fireCd:1.3, bSpeed:235, dmg:8,  score:150, aimErr:0.36, color:'#ff9f45', range:470},
-    heavy:  {hp:8, speed:46,  size:36, fireCd:2.1, bSpeed:195, dmg:15, score:250, aimErr:0.22, color:'#c65138', range:520},
-    sniper: {hp:3, speed:58,  size:24, fireCd:2.3, bSpeed:430, dmg:19, score:220, aimErr:0.05, color:'#b06bff', range:940},
-    boss:   {hp:64,speed:40,  size:58, fireCd:1.0, bSpeed:250, dmg:16, score:2000,aimErr:0.13, color:'#ff3fa4', range:960},
+  /**
+   * 적 유형. from = 등장 레벨. weapon은 enemyFire()에서 분기한다.
+   * 무기는 유형별로 고정 — 플레이어 무기 티어를 그대로 따라가지 않는다.
+   */
+  const ENEMY = {
+    grunt:   { from:1,  hp:6,   speed:66,  size:26, fireCd:1.7, bSpeed:230, dmg:8,  score:100, aimErr:0.28, color:'#ff5b6b', range:540, weapon:'cannon' },
+    scout:   { from:2,  hp:4,   speed:135, size:22, fireCd:1.9, bSpeed:280, dmg:5,  score:150, aimErr:0.30, color:'#ff9f45', range:460, weapon:'burst' },
+    heavy:   { from:4,  hp:18,  speed:46,  size:36, fireCd:2.3, bSpeed:240, dmg:5,  score:250, aimErr:0.18, color:'#c65138', range:400, weapon:'shotgun' },
+    sniper:  { from:6,  hp:6,   speed:58,  size:24, fireCd:3.0, bSpeed:0,   dmg:20, score:220, aimErr:0.02, color:'#b06bff', range:940, weapon:'snipe' },
+    mortar:  { from:8,  hp:9,   speed:50,  size:28, fireCd:2.8, bSpeed:0,   dmg:16, score:240, aimErr:0,    color:'#e0a040', range:700, weapon:'lob' },
+    shield:  { from:10, hp:14,  speed:62,  size:30, fireCd:1.8, bSpeed:250, dmg:9,  score:300, aimErr:0.22, color:'#4f8cff', range:540, weapon:'cannon', shield:true },
+    jammer:  { from:12, hp:12,  speed:70,  size:28, fireCd:2.2, bSpeed:200, dmg:7,  score:320, aimErr:0.3,  color:'#d05cff', range:500, weapon:'pulse', jam:true },
+    carrier: { from:14, hp:22,  speed:42,  size:38, fireCd:3.2, bSpeed:0,   dmg:10, score:400, aimErr:0,    color:'#3fd17a', range:900, weapon:'launch' },
+    kami:    { from:99, hp:2,   speed:175, size:14, fireCd:99,  bSpeed:0,   dmg:12, score:30,  aimErr:0,    color:'#ff4d5e', range:0,   weapon:'none' },
+    boss:    { from:99, hp:150, speed:40,  size:60, fireCd:1.0, bSpeed:260, dmg:12, score:3000,aimErr:0.1,  color:'#ff3fa4', range:980, weapon:'boss' },
   };
+  const BOSS_NAMES = { 5:'WARDEN', 10:'PRISM', 15:'HIVE', 20:'OMEGA' };
 
   const G = {
     screen: 'start',
     keys: {},
+    mouse: { x: W / 2, y: H / 2, on: false, down: false },
     player: null,
     enemies: [], bullets: [], ebullets: [], beams: [], walls: [], powerups: [], particles: [],
+    shells: [], vortices: [], drones: [], bolts: [], strikes: [], pulses: [], toasts: [],
     now: 0, last: 0, paused: false, shake: 0,
-    score: 0, lives: 3, level: 1, weaponBoostUntil: 0,
+    score: 0, lives: 3, level: 1,
     hiScore: 0, eid: 0,
-    spawnQueue: [], totalEnemies: 0, killed: 0, maxActive: 3,
+    spawnQueue: [], totalEnemies: 0, killed: 0, maxActive: 3, spawnTimer: 0,
+    // 런 동안 유지되는 강화 상태
+    up: null, weaponSel: 0, overdriveUntil: 0, cards: [],
   };
 
   try { G.hiScore = parseInt(localStorage.getItem('steelsiege_hi') || '0', 10) || 0; } catch (_) {}
@@ -199,82 +216,112 @@
     G.screen = name;
     G.paused = name === 'pause';
     for (const k of Object.keys(ov)) ov[k].classList.toggle('show', k === name);
+    if (name !== 'playing') { G.keys.fire = false; G.mouse.down = false; }
   }
 
   function fmt(n) { return (n || 0).toLocaleString(); }
+  const rnd = (a, b) => a + Math.random() * (b - a);
+  const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+  const angDiff = (a, b) => Math.atan2(Math.sin(a - b), Math.cos(a - b));
 
-  function playerWeapon() {
-    let t = tierForLevel(G.level);
-    if (G.weaponBoostUntil > G.now) t = Math.min(8, t + 1);
-    return WEAPONS[t];
+  /* ---------- run / upgrades ---------- */
+  function freshUpgrades() {
+    return {
+      mk: WEAPONS.map(() => 1),
+      maxHp: 100, maxEn: 100, regen: 15, armor: 0, speed: 1, fireRate: 1, repair: 0, dashCd: 2.2,
+    };
   }
-
-  function enemyWeaponTier() {
-    // 적은 현재 레벨 무기를 쓰되, 초반은 한 티어 낮게(레벨 1은 CANNON 유지)
-    const t = tierForLevel(G.level);
-    return Math.max(1, t);
-  }
+  function unlocked(i) { return WEAPONS[i].unlock <= G.level; }
+  function overdrive() { return G.overdriveUntil > G.now; }
+  /** 레벨에 따른 기본 화력 배율 — 적 체력 증가를 따라간다 */
+  function powerMul() { return 1 + (G.level - 1) * 0.07; }
+  function mk(id) { return G.up.mk[WIDX[id]]; }
 
   /* ---------- setup ---------- */
   function makePlayer() {
-    return { x: W / 2, y: H - 70, facing: -Math.PI / 2, size: 28, hp: 100, maxHp: 100, lastFire: 0, invuln: 1.6, recoil: 0 };
+    const u = G.up;
+    return {
+      x: W / 2, y: H - 70, facing: -Math.PI / 2, aim: -Math.PI / 2, size: 28,
+      hp: u.maxHp, maxHp: u.maxHp, en: u.maxEn, maxEn: u.maxEn,
+      cds: WEAPONS.map(() => 0), invuln: 1.6, recoil: 0,
+      dashT: 0, dashCd: 0, dashX: 0, dashY: 0,
+      railCharge: 0, lasering: false, jammed: false,
+    };
   }
 
   function setupLevel(n) {
     G.level = n;
+    const keep = G.player;
     G.player = makePlayer();
+    if (keep && keep.hp > 0) G.player.hp = Math.min(G.player.maxHp, keep.hp + 30);
     G.enemies = []; G.bullets = []; G.ebullets = []; G.beams = []; G.powerups = []; G.particles = [];
+    G.shells = []; G.vortices = []; G.drones = []; G.bolts = []; G.strikes = []; G.pulses = []; G.toasts = [];
+    G.overdriveUntil = 0;
     G.walls = genWalls(n);
     buildQueue(n);
-    G.maxActive = Math.min(3 + Math.floor(n / 3), 7);
+    G.maxActive = Math.min(3 + Math.floor(n / 3), 8);
+    G.spawnTimer = 0;
     spawnFill();
+    if (!unlocked(G.weaponSel)) G.weaponSel = 0;
+    const fresh = WEAPONS.findIndex(w => w.unlock === n);
+    if (fresh > 0) {
+      G.weaponSel = fresh;
+      toast('NEW WEAPON ▸ ' + WEAPONS[fresh].name + '  [' + WEAPONS[fresh].key + ']', WEAPONS[fresh].color, 3.2);
+      toast(WEAPONS[fresh].desc, '#cfd8e3', 3.2);
+    }
+    if (BOSS_NAMES[n]) toast('⚠ BOSS ▸ ' + BOSS_NAMES[n], '#ff3fa4', 3);
+    const newFoe = Object.keys(ENEMY).find(k => ENEMY[k].from === n && n > 1);
+    if (newFoe) toast('NEW HOSTILE ▸ ' + newFoe.toUpperCase(), ENEMY[newFoe].color, 3);
   }
 
   function buildQueue(n) {
-    const total = Math.min(3 + Math.floor((n - 1) * 0.9), 16);
-    const pool = ['grunt'];
-    if (n >= 3) pool.push('scout');
-    if (n >= 6) pool.push('heavy');
-    if (n >= 9) pool.push('sniper');
-    const boss = n % 5 === 0;
-    const q = [];
-    if (boss) {
-      q.push('boss');
-      for (let i = 1; i < Math.max(total, 4); i++) q.push(pool[(Math.random() * pool.length) | 0]);
-    } else {
-      for (let i = 0; i < total; i++) q.push(pool[(Math.random() * pool.length) | 0]);
+    const total = Math.min(4 + Math.floor((n - 1) * 0.85), 18);
+    const pool = Object.keys(ENEMY).filter(k => ENEMY[k].from <= n);
+    // 최근 등장한 유형이 더 자주 나오도록 가중
+    const weighted = [];
+    for (const k of pool) {
+      const age = n - ENEMY[k].from;
+      const w = k === 'grunt' ? Math.max(1, 4 - Math.floor(n / 4)) : age < 3 ? 3 : 2;
+      for (let i = 0; i < w; i++) weighted.push(k);
     }
+    const q = [];
+    const boss = n % 5 === 0;
+    if (boss) q.push('boss');
+    const cnt = boss ? Math.max(4, Math.floor(total * 0.6)) : total;
+    for (let i = 0; i < cnt; i++) q.push(weighted[(Math.random() * weighted.length) | 0]);
     G.spawnQueue = q; G.totalEnemies = q.length; G.killed = 0;
   }
 
   function spawnFill() {
-    while (G.enemies.length < G.maxActive && G.spawnQueue.length) {
+    let active = G.enemies.filter(e => !e.minion).length;
+    while (active < G.maxActive && G.spawnQueue.length) {
       G.enemies.push(makeEnemy(G.spawnQueue.shift()));
+      active++;
     }
   }
 
-  function makeEnemy(type) {
-    const b = enemyBase[type], n = G.level;
-    const hp = Math.max(1, Math.round(b.hp * (1 + (n - 1) * 0.16)));
-    const wTier = enemyWeaponTier();
-    const w = WEAPONS[wTier];
-    // 적 쿨다운: 무기 기본값 × 타입 배율 (플레이어보다 느리게)
-    const typeCdMul = type === 'boss' ? 0.75 : type === 'scout' ? 0.9 : type === 'sniper' ? 1.15 : 1.05;
+  function makeEnemy(type, at) {
+    const b = ENEMY[type], n = G.level;
+    const hpMul = type === 'boss' ? 1 + (n - 5) * 0.16 : 1 + (n - 1) * 0.13;
+    const hp = Math.max(1, Math.round(b.hp * hpMul));
+    let x = 44 + Math.random() * (W - 88), y = HUD + 30 + Math.random() * 130;
+    if (at) { x = at.x; y = at.y; }
+    for (let t = 0; t < 20 && !at && hitsWall(x, y, b.size); t++) { x = 44 + Math.random() * (W - 88); y = HUD + 30 + Math.random() * 130; }
     return {
       id: ++G.eid, type,
-      x: 44 + Math.random() * (W - 88),
-      y: HUD + 30 + Math.random() * 130,
-      facing: Math.PI / 2, size: b.size,
+      x, y, facing: Math.PI / 2, aim: Math.PI / 2, size: b.size,
       hp, maxHp: hp,
-      speed: b.speed * Math.min(1.7, 1 + (n - 1) * 0.045),
-      fireCd: Math.max(0.35, w.fireCd * (1.8 + (type === 'heavy' ? 0.4 : 0)) * typeCdMul * Math.max(0.55, 1 - (n - 1) * 0.02)),
-      fireTimer: 0.6 + Math.random() * 1.2,
-      aimErr: b.aimErr * Math.max(0.2, 1 - (n - 1) * 0.05),
-      bSpeed: (w.bSpeed || b.bSpeed) * Math.min(1.4, 1 + (n - 1) * 0.02) * 0.85,
-      dmg: Math.max(4, Math.round((b.dmg * 0.55) + (n - 1) * 0.9 + wTier)),
-      color: b.color, range: Math.max(b.range, w.range || 0), score: b.score,
-      moveAngle: Math.PI / 2, dirTimer: 0, flash: 0, boss: type === 'boss',
-      weaponTier: wTier,
+      speed: b.speed * Math.min(1.6, 1 + (n - 1) * 0.035),
+      fireCd: Math.max(0.5, b.fireCd * Math.max(0.6, 1 - (n - 1) * 0.02)),
+      fireTimer: 0.8 + Math.random() * 1.4,
+      aimErr: b.aimErr * Math.max(0.3, 1 - (n - 1) * 0.04),
+      bSpeed: b.bSpeed * Math.min(1.35, 1 + (n - 1) * 0.018),
+      dmg: Math.round(b.dmg * (1 + (n - 1) * 0.055)),
+      color: b.color, range: b.range, score: b.score, weapon: b.weapon,
+      moveAngle: Math.PI / 2, dirTimer: 0, flash: 0, boss: type === 'boss', minion: type === 'kami',
+      stun: 0, slow: 0, shieldUp: !!b.shield, shieldDown: 0, jam: !!b.jam,
+      aiming: 0, aimLock: 0, pattern: 0, patternT: 2,
+      name: type === 'boss' ? (BOSS_NAMES[n] || 'BOSS') : '',
     };
   }
 
@@ -316,6 +363,10 @@
     const ny = e.y + my;
     if (!hitsWall(e.x, ny, e.size) && ny > HUD + e.size / 2 && ny < H - e.size / 2) e.y = ny;
   }
+  function toast(text, color, life) {
+    G.toasts.push({ text, color: color || '#fff', life: life || 2, maxLife: life || 2 });
+    if (G.toasts.length > 5) G.toasts.shift();
+  }
 
   /* ---------- firing ---------- */
   function mkBullet(x, y, ang, speed, opts) {
@@ -328,12 +379,15 @@
       homing: !!opts.homing,
       softHome: !!opts.softHome,
       turn: opts.turn || 3.2,
-      explosive: !!opts.explosive,
+      explosive: opts.explosive || 0,
+      knock: opts.knock || 0,
       size: opts.size || 4,
       life: opts.life || 1.7,
       color: opts.color,
       hit: {},
       friendly: !!opts.friendly,
+      emp: !!opts.emp,
+      bomb: !!opts.bomb,
     };
   }
 
@@ -346,160 +400,423 @@
     };
   }
 
-  function fireLaser(origin, ang, w, friendly, dmgScale = 1) {
-    const maxR = w.range || 900;
+  /** 실드 적이 정면(±70°)에서 오는 공격을 막는지 */
+  function shieldBlocks(e, fromX, fromY) {
+    if (!e.shieldUp || e.stun > 0) return false;
+    const a = Math.atan2(fromY - e.y, fromX - e.x);
+    return Math.abs(angDiff(a, e.aim)) < 1.22;
+  }
+
+  /**
+   * 히트스캔 빔. opts: dmg, pierce, range, width, color, throughWalls, life.
+   * 반환값: 실제 빔 끝 거리.
+   */
+  function fireBeam(origin, ang, opts, friendly) {
+    const maxR = opts.range || 900;
     const step = 6;
     let dist = 0;
     const hits = [];
     const hitSet = new Set();
+    let blocked = null;
+    outer:
     while (dist < maxR) {
       dist += step;
       const x = origin.x + Math.cos(ang) * dist;
       const y = origin.y + Math.sin(ang) * dist;
       if (x < -10 || x > W + 10 || y < HUD - 10 || y > H + 10) break;
-      if (pointInWall(x, y)) { dist -= step * 0.5; break; }
+      if (!opts.throughWalls && pointInWall(x, y)) { dist -= step * 0.5; break; }
       if (friendly) {
         for (const e of G.enemies) {
           if (hitSet.has(e.id)) continue;
-          if ((e.x - x) ** 2 + (e.y - y) ** 2 < (e.size / 2 + w.width) ** 2) {
-            hits.push(e);
+          if ((e.x - x) ** 2 + (e.y - y) ** 2 < (e.size / 2 + opts.width) ** 2) {
             hitSet.add(e.id);
-            if (!w.pierce) { dist = Math.hypot(e.x - origin.x, e.y - origin.y); break; }
+            if (!opts.throughShield && shieldBlocks(e, origin.x, origin.y)) {
+              blocked = e; dist = Math.hypot(e.x - origin.x, e.y - origin.y) - e.size / 2; break outer;
+            }
+            hits.push(e);
+            if (!opts.pierce) { dist = Math.hypot(e.x - origin.x, e.y - origin.y); break outer; }
           }
         }
-        if (!w.pierce && hits.length) break;
       } else {
         const p = G.player;
-        if (p && p.invuln <= 0 && (p.x - x) ** 2 + (p.y - y) ** 2 < (p.size / 2 + w.width) ** 2) {
+        if (p && !playerSafe() && (p.x - x) ** 2 + (p.y - y) ** 2 < (p.size / 2 + opts.width) ** 2) {
           hits.push(p);
           dist = Math.hypot(p.x - origin.x, p.y - origin.y);
           break;
         }
       }
     }
-    G.beams.push({
-      x0: origin.x, y0: origin.y,
-      x1: origin.x + Math.cos(ang) * dist,
-      y1: origin.y + Math.sin(ang) * dist,
-      color: w.color, width: w.width || 3, life: 0.08, maxLife: 0.08, friendly,
-    });
-    const dmg = Math.round(w.dmg * dmgScale);
-    if (friendly) for (const e of hits) { damageEnemy(e, dmg); sparks(e.x, e.y, w.color, 4); }
-    else if (hits.length) { damagePlayer(dmg); sparks(hits[0].x, hits[0].y, w.color, 4); }
+    if (opts.life !== 0) {
+      G.beams.push({
+        x0: origin.x, y0: origin.y,
+        x1: origin.x + Math.cos(ang) * dist,
+        y1: origin.y + Math.sin(ang) * dist,
+        color: opts.color, width: opts.width || 3, life: opts.life || 0.08, maxLife: opts.life || 0.08,
+      });
+    }
+    if (blocked) shieldSpark(blocked, origin.x, origin.y);
+    if (friendly) for (const e of hits) { damageEnemy(e, opts.dmg); if (Math.random() < 0.5) sparks(e.x, e.y, opts.color, 2); }
+    else if (hits.length) { damagePlayer(opts.dmg); sparks(hits[0].x, hits[0].y, opts.color, 4); }
+    return { dist, hits };
   }
 
-  function playerFire() {
+  /** 마우스가 캔버스 위에 있으면 마우스 지점, 아니면 포탑 방향 280px 앞 */
+  function aimPoint(minD, maxD) {
     const p = G.player;
-    const w = playerWeapon();
-    if (G.now - p.lastFire < w.fireCd) return;
-    p.lastFire = G.now;
+    let tx, ty;
+    if (G.mouse.on) { tx = G.mouse.x; ty = G.mouse.y; }
+    else { tx = p.x + Math.cos(p.aim) * 280; ty = p.y + Math.sin(p.aim) * 280; }
+    const d = Math.hypot(tx - p.x, ty - p.y);
+    const dd = clamp(d, minD, maxD);
+    const a = Math.atan2(ty - p.y, tx - p.x);
+    return { x: clamp(p.x + Math.cos(a) * dd, 20, W - 20), y: clamp(p.y + Math.sin(a) * dd, HUD + 20, H - 20) };
+  }
+
+  function playerFire(dt) {
+    const p = G.player;
+    const i = G.weaponSel;
+    const w = WEAPONS[i];
+    const lvl = G.up.mk[i];
+    const od = overdrive();
+    const costMul = od ? 0.5 : 1;
+    const f = p.aim;
+    const pm = powerMul();
+
+    // 연속형 무기(레이저)와 충전형 무기(레일건)는 자체 처리
+    if (w.id === 'laser') {
+      const cost = w.cost * (lvl >= 2 ? 0.9 : 1) * costMul * dt;
+      if (p.en < cost) { lowEnergy(); p.lasering = false; return; }
+      p.en -= cost; p.lasering = true;
+      const dps = 15 * pm * (lvl >= 2 ? 1.4 : 1) * (od ? 1.3 : 1);
+      fireBeam(muzzle(p, f), f, { dmg: dps * dt, pierce: lvl >= 3, range: 900, width: lvl >= 3 ? 6 : 4, color: w.color, life: 0.05 }, true);
+      if (Math.random() < 0.25) sfx('laserhum');
+      return;
+    }
+    if (w.id === 'rail') {
+      if (p.cds[i] > 0) return;
+      const rate = (lvl >= 2 ? 1.6 : 1.1) * (od ? 1.4 : 1);
+      p.railCharge = Math.min(1, p.railCharge + rate * dt);
+      return; // 놓을 때 releaseRail()
+    }
+
+    if (p.cds[i] > 0) return;
+    const cost = w.cost * costMul;
+    if (p.en < cost) { lowEnergy(); return; }
+    p.en -= cost;
+    p.cds[i] = w.cd / G.up.fireRate * (od ? 0.6 : 1) * (w.id === 'cannon' && lvl >= 2 ? (lvl >= 3 ? 0.64 : 0.8) : 1);
     p.recoil = 0.09;
-    const f = p.facing;
     const push = (b) => G.bullets.push(b);
 
-    if (w.kind === 'bullet') {
-      if (w.shots === 2) {
-        const a = muzzle(p, f, 9), b = muzzle(p, f, -9);
-        push(mkBullet(a.x, a.y, f, w.bSpeed, { dmg: w.dmg, color: w.color, friendly: true }));
-        push(mkBullet(b.x, b.y, f, w.bSpeed, { dmg: w.dmg, color: w.color, friendly: true }));
-      } else {
+    switch (w.id) {
+      case 'cannon': {
+        const n = lvl;
+        for (let k = 0; k < n; k++) {
+          const off = n === 1 ? 0 : (k - (n - 1) / 2) * 9;
+          const a = f + (n === 3 ? (k - 1) * 0.06 : 0);
+          const m = muzzle(p, f, off);
+          push(mkBullet(m.x, m.y, a, 440, { dmg: 2 * pm, color: w.color, friendly: true, size: 4 }));
+        }
+        sfx('shoot');
+        break;
+      }
+      case 'scatter': {
+        const n = 5 + (lvl - 1) * 3;
+        for (let k = 0; k < n; k++) {
+          const a = f + (k - (n - 1) / 2) * (0.62 / (n - 1)) + rnd(-0.04, 0.04);
+          const m = muzzle(p, a);
+          push(mkBullet(m.x, m.y, a, rnd(430, 520), {
+            dmg: 1.2 * pm, color: w.color, size: 3, life: 0.42, friendly: true, knock: 70, pierce: lvl >= 3,
+          }));
+        }
+        p.recoil = 0.14;
+        sfx('scatter');
+        break;
+      }
+      case 'mortar': {
+        const tgt = aimPoint(110, 480);
+        const shots = lvl >= 3 ? 3 : 1;
+        for (let k = 0; k < shots; k++) {
+          const ox = shots === 1 ? 0 : rnd(-55, 55), oy = shots === 1 ? 0 : rnd(-55, 55);
+          lobShell(p.x, p.y, tgt.x + ox, tgt.y + oy, {
+            dur: 0.7 + k * 0.08, r: lvl >= 2 ? 84 : 70, dmg: (lvl >= 2 ? 7 : 5) * pm, friendly: true, color: w.color,
+          });
+        }
+        sfx('mortar');
+        break;
+      }
+      case 'tesla': {
+        teslaChain(muzzle(p, f), f, { jumps: 3 + (lvl - 1) * 2, dmg: 3.2 * pm, slow: lvl >= 3 });
+        sfx('tesla');
+        break;
+      }
+      case 'swirl': {
         const m = muzzle(p, f);
-        push(mkBullet(m.x, m.y, f, w.bSpeed, { dmg: w.dmg, color: w.color, friendly: true }));
+        G.vortices.push({
+          x: m.x, y: m.y, vx: Math.cos(f) * 150, vy: Math.sin(f) * 150, life: 2.6, maxLife: 2.6,
+          pull: lvl >= 2 ? 190 : 150, core: 55, dps: 7 * pm, burst: 10 * pm, split: lvl >= 3, mini: false, rot: 0,
+        });
+        sfx('swirl');
+        break;
       }
-      sfx('shoot');
-    } else if (w.kind === 'laser') {
-      if (w.dual) {
-        fireLaser(muzzle(p, f, 8), f, w, true);
-        fireLaser(muzzle(p, f, -8), f, w, true);
-      } else {
-        fireLaser(muzzle(p, f), f, w, true);
+      case 'emp': {
+        const R = lvl >= 2 ? 290 : 230;
+        G.pulses.push({ x: p.x, y: p.y, r: 10, maxR: R, life: 0.45, maxLife: 0.45, color: w.color, friendly: true });
+        for (const e of G.enemies) {
+          if ((e.x - p.x) ** 2 + (e.y - p.y) ** 2 < R * R) {
+            e.stun = Math.max(e.stun, (lvl >= 3 ? 3.6 : 2.6) * (e.boss ? 0.45 : 1));
+            if (e.shieldUp) { e.shieldUp = false; e.shieldDown = 6; }
+            damageEnemy(e, 3 * pm);
+          }
+        }
+        for (let k = G.ebullets.length - 1; k >= 0; k--) {
+          const b = G.ebullets[k];
+          if ((b.x - p.x) ** 2 + (b.y - p.y) ** 2 < R * R) { sparks(b.x, b.y, w.color, 2); G.ebullets.splice(k, 1); }
+        }
+        for (const s of G.shells) if (!s.friendly && (s.x1 - p.x) ** 2 + (s.y1 - p.y) ** 2 < R * R) s.dead = true;
+        G.shake = Math.min(14, G.shake + 6);
+        sfx('emp');
+        break;
       }
-      sfx('laser');
-    } else if (w.kind === 'swarm') {
-      const n = w.count;
-      for (let i = 0; i < n; i++) {
-        const ang = f + (i - (n - 1) / 2) * (w.spread / (n - 1));
-        const m = muzzle(p, ang);
-        push(mkBullet(m.x, m.y, ang, w.bSpeed * (0.85 + Math.random() * 0.25), {
-          dmg: w.dmg, color: w.color, size: 3, life: 1.4, softHome: true, turn: 2.2, friendly: true,
-        }));
+      case 'drone': {
+        const count = lvl >= 3 ? 3 : 2;
+        const life = lvl >= 2 ? 13 : 10;
+        for (let k = 0; k < count; k++) {
+          G.drones.push({ x: p.x, y: p.y, life, maxLife: life, bombCd: 0.6 + k * 0.3, target: null, orbit: k * TAU / count, bob: Math.random() * TAU });
+        }
+        while (G.drones.length > 6) G.drones.shift();
+        sfx('drone');
+        break;
       }
-      sfx('swarm');
-    } else if (w.kind === 'missile') {
-      const m = muzzle(p, f);
-      push(mkBullet(m.x, m.y, f, w.bSpeed, {
-        dmg: w.dmg, color: w.color, size: 6, life: 2.4, homing: true, turn: w.turn, explosive: true, friendly: true,
-      }));
-      sfx('missile');
-    } else if (w.kind === 'omega') {
-      // 중앙 관통 레이저 + 좌우 추적 미사일
-      fireLaser(muzzle(p, f), f, { color: '#ff6bff', dmg: w.laserDmg, pierce: true, range: 980, width: 5 }, true);
-      const L = muzzle(p, f, 11), R = muzzle(p, f, -11);
-      push(mkBullet(L.x, L.y, f - 0.18, w.bSpeed, {
-        dmg: w.missileDmg, color: '#ffd23f', size: 6, life: 2.5, homing: true, turn: w.turn, explosive: true, friendly: true,
-      }));
-      push(mkBullet(R.x, R.y, f + 0.18, w.bSpeed, {
-        dmg: w.missileDmg, color: '#ffd23f', size: 6, life: 2.5, homing: true, turn: w.turn, explosive: true, friendly: true,
-      }));
-      sfx('omega');
+      case 'orbital': {
+        const tgt = aimPoint(60, 900);
+        const reps = lvl >= 3 ? 3 : 1;
+        for (let k = 0; k < reps; k++) {
+          G.strikes.push({
+            x: tgt.x + (k ? rnd(-70, 70) : 0), y: tgt.y + (k ? rnd(-70, 70) : 0),
+            delay: 0.9 + k * 0.45, maxDelay: 0.9 + k * 0.45, r: lvl >= 2 ? 120 : 95, dmg: 26 * pm, fire: 0, friendly: true,
+          });
+        }
+        sfx('lock');
+        break;
+      }
     }
+  }
+
+  function releaseRail() {
+    const p = G.player;
+    const i = WIDX.rail;
+    const c = p.railCharge;
+    p.railCharge = 0;
+    if (c < 0.2 || p.cds[i] > 0) return;
+    const w = WEAPONS[i];
+    const cost = w.cost * (overdrive() ? 0.5 : 1);
+    if (p.en < cost) { lowEnergy(); return; }
+    p.en -= cost;
+    p.cds[i] = w.cd;
+    const lvl = G.up.mk[i];
+    const dmg = (6 + 30 * c) * powerMul() * (lvl >= 3 ? 1.5 : 1);
+    const f = p.aim;
+    fireBeam(muzzle(p, f), f, { dmg, pierce: true, range: 1200, width: 3 + 5 * c, color: w.color, throughWalls: true, throughShield: c > 0.95, life: 0.22 }, true);
+    p.recoil = 0.2;
+    moveEntity(p, -Math.cos(f) * 14 * c, -Math.sin(f) * 14 * c);
+    G.shake = Math.min(16, G.shake + 4 + 8 * c);
+    sfx('rail');
+  }
+
+  let lowEnT = 0;
+  function lowEnergy() {
+    if (G.now - lowEnT < 0.8) return;
+    lowEnT = G.now; toast('LOW ENERGY', '#5ad1ff', 0.8); sfx('empty');
+  }
+
+  function lobShell(x0, y0, x1, y1, o) {
+    G.shells.push({ x0, y0, x1, y1, t: 0, dur: o.dur, r: o.r, dmg: o.dmg, friendly: o.friendly, color: o.color, arc: o.arc || 120 });
+  }
+
+  /** 테슬라 연쇄: 조준 방향 원뿔 안의 가장 가까운 적부터 튄다 */
+  function teslaChain(origin, ang, o) {
+    let from = { x: origin.x, y: origin.y };
+    const hit = new Set();
+    let first = null, bestScore = 1e9;
+    for (const e of G.enemies) {
+      const d = Math.hypot(e.x - origin.x, e.y - origin.y);
+      const off = Math.abs(angDiff(Math.atan2(e.y - origin.y, e.x - origin.x), ang));
+      if (d < 330 && off < 0.6) {
+        const s = d + off * 260;
+        if (s < bestScore) { bestScore = s; first = e; }
+      }
+    }
+    if (!first) {
+      const ex = origin.x + Math.cos(ang) * 150, ey = origin.y + Math.sin(ang) * 150;
+      G.bolts.push({ pts: jagged(origin.x, origin.y, ex, ey), life: 0.12, maxLife: 0.12, color: '#9ad8ff' });
+      return;
+    }
+    let cur = first, dmg = o.dmg;
+    for (let j = 0; j < o.jumps && cur; j++) {
+      hit.add(cur.id);
+      G.bolts.push({ pts: jagged(from.x, from.y, cur.x, cur.y), life: 0.16, maxLife: 0.16, color: '#bfe8ff' });
+      damageEnemy(cur, dmg);
+      if (o.slow) cur.slow = 1.5;
+      sparks(cur.x, cur.y, '#bfe8ff', 3);
+      from = { x: cur.x, y: cur.y };
+      dmg *= 0.88;
+      let nxt = null, nd = 190;
+      for (const e of G.enemies) {
+        if (hit.has(e.id)) continue;
+        const d = Math.hypot(e.x - from.x, e.y - from.y);
+        if (d < nd) { nd = d; nxt = e; }
+      }
+      cur = nxt;
+    }
+  }
+  function jagged(x0, y0, x1, y1) {
+    const pts = [[x0, y0]];
+    const n = Math.max(3, Math.floor(Math.hypot(x1 - x0, y1 - y0) / 18));
+    const nx = -(y1 - y0), ny = x1 - x0, nl = Math.hypot(nx, ny) || 1;
+    for (let k = 1; k < n; k++) {
+      const t = k / n, j = rnd(-9, 9);
+      pts.push([x0 + (x1 - x0) * t + nx / nl * j, y0 + (y1 - y0) * t + ny / nl * j]);
+    }
+    pts.push([x1, y1]);
+    return pts;
   }
 
   function enemyFire(e) {
     const p = G.player;
     if (!p) return;
-    const w = WEAPONS[e.weaponTier] || WEAPONS[1];
-    let ang = Math.atan2(p.y - e.y, p.x - e.x) + (Math.random() - 0.5) * 2 * e.aimErr;
-    const dmgScale = e.boss ? 1.15 : 0.85;
+    const base = Math.atan2(p.y - e.y, p.x - e.x);
+    const ang = base + (Math.random() - 0.5) * 2 * e.aimErr;
     const push = (b) => G.ebullets.push(b);
-    const col = e.type === 'sniper' ? '#c79bff' : w.color;
-
-    if (w.kind === 'bullet') {
-      if (w.shots === 2 || e.boss) {
-        const a = muzzle(e, ang, 8), b = muzzle(e, ang, -8);
-        push(mkBullet(a.x, a.y, ang, e.bSpeed || w.bSpeed, { dmg: e.dmg, color: col, size: 4, life: 2.4 }));
-        push(mkBullet(b.x, b.y, ang, e.bSpeed || w.bSpeed, { dmg: e.dmg, color: col, size: 4, life: 2.4 }));
-        if (e.boss && w.shots !== 2) {
+    const n = G.level;
+    switch (e.weapon) {
+      case 'cannon': {
+        const twin = n >= 9;
+        if (twin) {
+          const a = muzzle(e, ang, 7), b = muzzle(e, ang, -7);
+          push(mkBullet(a.x, a.y, ang, e.bSpeed, { dmg: e.dmg * 0.7, color: e.color, life: 2.4 }));
+          push(mkBullet(b.x, b.y, ang, e.bSpeed, { dmg: e.dmg * 0.7, color: e.color, life: 2.4 }));
+        } else {
           const m = muzzle(e, ang);
-          push(mkBullet(m.x, m.y, ang, e.bSpeed || w.bSpeed, { dmg: e.dmg, color: col, size: 4, life: 2.4 }));
+          push(mkBullet(m.x, m.y, ang, e.bSpeed, { dmg: e.dmg, color: e.color, life: 2.4 }));
         }
-      } else {
+        // 후반 일반 전차는 가끔 유도탄
+        if (n >= 16 && Math.random() < 0.3) {
+          const m = muzzle(e, ang);
+          push(mkBullet(m.x, m.y, ang, 200, { dmg: e.dmg, color: '#ff5b6b', size: 6, life: 2.6, homing: true, turn: 2.2 }));
+        }
+        sfx('eshoot');
+        break;
+      }
+      case 'burst': {
+        for (let k = 0; k < 3; k++) {
+          const m = muzzle(e, ang);
+          const b = mkBullet(m.x, m.y, ang + rnd(-0.05, 0.05), e.bSpeed, { dmg: e.dmg, color: e.color, size: 3, life: 2 });
+          // 3점사: 탄을 뒤로 물려 시차를 만든다
+          b.x -= b.vx * k * 0.07; b.y -= b.vy * k * 0.07;
+          push(b);
+        }
+        sfx('eshoot');
+        break;
+      }
+      case 'shotgun': {
+        const k = n >= 12 ? 7 : 5;
+        for (let j = 0; j < k; j++) {
+          const a = ang + (j - (k - 1) / 2) * 0.13;
+          const m = muzzle(e, a);
+          push(mkBullet(m.x, m.y, a, e.bSpeed * rnd(0.9, 1.05), { dmg: e.dmg, color: e.color, size: 3.5, life: 1.3 }));
+        }
+        sfx('eshoot');
+        break;
+      }
+      case 'snipe': {
+        // 조준선 예고 후 발사 (update에서 처리)
+        e.aiming = 0.85; e.aimLock = base;
+        sfx('charge');
+        break;
+      }
+      case 'lob': {
+        const lead = 0.4;
+        const tx = clamp(p.x + rnd(-30, 30) + (G.keys.right ? 1 : G.keys.left ? -1 : 0) * 40 * lead, 20, W - 20);
+        const ty = clamp(p.y + rnd(-30, 30) + (G.keys.down ? 1 : G.keys.up ? -1 : 0) * 40 * lead, HUD + 20, H - 20);
+        lobShell(e.x, e.y, tx, ty, { dur: 1.15, r: 62, dmg: e.dmg, friendly: false, color: '#ffb14d' });
+        sfx('mortar');
+        break;
+      }
+      case 'pulse': {
         const m = muzzle(e, ang);
-        push(mkBullet(m.x, m.y, ang, e.bSpeed || w.bSpeed, { dmg: e.dmg, color: col, size: e.type === 'sniper' ? 5 : 4, life: 2.4 }));
+        push(mkBullet(m.x, m.y, ang, e.bSpeed, { dmg: e.dmg, color: '#d05cff', size: 6, life: 2.6, softHome: true, turn: 1.4, emp: true }));
+        sfx('eshoot');
+        break;
       }
-      sfx('eshoot');
-    } else if (w.kind === 'laser') {
-      if (w.dual || e.boss) {
-        fireLaser(muzzle(e, ang, 7), ang, { ...w, color: col, dmg: Math.max(1, Math.round(e.dmg * 0.35)) }, false, dmgScale);
-        fireLaser(muzzle(e, ang, -7), ang, { ...w, color: col, dmg: Math.max(1, Math.round(e.dmg * 0.35)) }, false, dmgScale);
-      } else {
-        fireLaser(muzzle(e, ang), ang, { ...w, color: col, dmg: Math.max(1, Math.round(e.dmg * 0.4)) }, false, dmgScale);
+      case 'launch': {
+        const minions = G.enemies.filter(x => x.minion).length;
+        if (minions < 8) {
+          for (let k = 0; k < 2; k++) {
+            const k2 = makeEnemy('kami', { x: e.x + rnd(-20, 20), y: e.y + rnd(-20, 20) });
+            k2.fireTimer = 99;
+            G.enemies.push(k2);
+          }
+          sfx('drone');
+        }
+        break;
       }
-      sfx('elaser');
-    } else if (w.kind === 'swarm') {
-      const n = e.boss ? 9 : 5;
-      for (let i = 0; i < n; i++) {
-        const a = ang + (i - (n - 1) / 2) * 0.12;
-        const m = muzzle(e, a);
-        push(mkBullet(m.x, m.y, a, (e.bSpeed || 220) * 0.9, {
-          dmg: Math.max(4, Math.round(e.dmg * 0.55)), color: col, size: 3, life: 1.6, softHome: true, turn: 1.6,
-        }));
-      }
-      sfx('eshoot');
-    } else if (w.kind === 'missile' || w.kind === 'omega') {
-      const shots = e.boss || w.kind === 'omega' ? 2 : 1;
-      for (let i = 0; i < shots; i++) {
-        const a = ang + (shots === 1 ? 0 : (i ? 0.2 : -0.2));
-        const m = muzzle(e, a, shots === 1 ? 0 : (i ? 8 : -8));
-        push(mkBullet(m.x, m.y, a, e.bSpeed || 220, {
-          dmg: e.dmg, color: col, size: 6, life: 2.6, homing: true, turn: 2.6, explosive: false,
-        }));
-      }
-      if (w.kind === 'omega') {
-        fireLaser(muzzle(e, ang), ang, { color: col, dmg: Math.max(1, Math.round(e.dmg * 0.35)), pierce: false, range: 900, width: 4 }, false, dmgScale);
-      }
-      sfx('emissile');
+      case 'boss': bossAttack(e, base); break;
     }
+  }
+
+  /** 보스 패턴: 레벨이 높을수록 패턴이 많아진다 */
+  function bossAttack(e, base) {
+    const n = G.level;
+    const patterns = ['spread', 'ring'];
+    if (n >= 10) patterns.push('snipe', 'lob');
+    if (n >= 15) patterns.push('kami', 'missiles');
+    if (n >= 20) patterns.push('sweep');
+    const pat = patterns[e.pattern % patterns.length];
+    const push = (b) => G.ebullets.push(b);
+    switch (pat) {
+      case 'spread':
+        for (let j = 0; j < 7; j++) {
+          const a = base + (j - 3) * 0.16;
+          const m = muzzle(e, a);
+          push(mkBullet(m.x, m.y, a, e.bSpeed, { dmg: e.dmg, color: e.color, size: 5, life: 2.6 }));
+        }
+        sfx('eshoot');
+        break;
+      case 'ring': {
+        const k = n >= 15 ? 22 : 16, off = Math.random() * TAU;
+        for (let j = 0; j < k; j++) {
+          const a = off + j * TAU / k;
+          push(mkBullet(e.x, e.y, a, e.bSpeed * 0.75, { dmg: e.dmg * 0.8, color: '#ff8ad0', size: 4.5, life: 3.2 }));
+        }
+        sfx('eshoot');
+        break;
+      }
+      case 'snipe': e.aiming = 0.9; e.aimLock = base; sfx('charge'); break;
+      case 'lob':
+        for (let j = 0; j < 4; j++) {
+          lobShell(e.x, e.y, clamp(G.player.x + rnd(-110, 110), 20, W - 20), clamp(G.player.y + rnd(-110, 110), HUD + 20, H - 20),
+            { dur: 1.1 + j * 0.15, r: 60, dmg: e.dmg, friendly: false, color: '#ffb14d' });
+        }
+        sfx('mortar');
+        break;
+      case 'kami':
+        for (let j = 0; j < 4; j++) G.enemies.push(makeEnemy('kami', { x: e.x + rnd(-30, 30), y: e.y + rnd(-30, 30) }));
+        sfx('drone');
+        break;
+      case 'missiles':
+        for (let j = 0; j < 4; j++) {
+          const a = base + (j - 1.5) * 0.5;
+          const m = muzzle(e, a);
+          push(mkBullet(m.x, m.y, a, 210, { dmg: e.dmg, color: '#ff5b6b', size: 6, life: 3, homing: true, turn: 2.0 }));
+        }
+        sfx('emissile');
+        break;
+      case 'sweep':
+        e.sweep = 1.6; e.sweepA = base - 0.9;
+        sfx('charge');
+        break;
+    }
+    e.pattern++;
   }
 
   /* ---------- update ---------- */
@@ -513,7 +830,7 @@
     const sp = Math.hypot(b.vx, b.vy);
     const des = Math.atan2(best.y - b.y, best.x - b.x);
     let cur = Math.atan2(b.vy, b.vx);
-    let diff = Math.atan2(Math.sin(des - cur), Math.cos(des - cur));
+    let diff = angDiff(des, cur);
     const mt = turnRate * dt;
     if (diff > mt) diff = mt;
     if (diff < -mt) diff = -mt;
@@ -522,131 +839,399 @@
     b.vy = Math.sin(cur) * sp;
   }
 
+  function playerSafe() {
+    const p = G.player;
+    return !p || p.invuln > 0 || p.dashT > 0;
+  }
+
   function update(dt) {
     const p = G.player;
+    const u = G.up;
     let dx = (G.keys.right ? 1 : 0) - (G.keys.left ? 1 : 0);
     let dy = (G.keys.down ? 1 : 0) - (G.keys.up ? 1 : 0);
-    const pSpeed = 140 * Math.min(1.55, 1 + (G.level - 1) * 0.028);
-    if (dx || dy) {
+    const pSpeed = 145 * u.speed * Math.min(1.4, 1 + (G.level - 1) * 0.02);
+    if (p.dashT > 0) {
+      p.dashT -= dt;
+      moveEntity(p, p.dashX * pSpeed * 3.4 * dt, p.dashY * pSpeed * 3.4 * dt);
+      if (Math.random() < 0.8) G.particles.push({ x: p.x + rnd(-6, 6), y: p.y + rnd(-6, 6), vx: 0, vy: 0, life: 0.25, maxLife: 0.25, color: '#35e0d8', size: 4 });
+    } else if (dx || dy) {
       const l = Math.hypot(dx, dy); dx /= l; dy /= l;
-      p.facing = Math.atan2(dy, dx);
+      const target = Math.atan2(dy, dx);
+      p.facing += clamp(angDiff(target, p.facing), -10 * dt, 10 * dt);
       moveEntity(p, dx * pSpeed * dt, dy * pSpeed * dt);
     }
+    // 포탑: 마우스가 있으면 마우스, 없으면 차체 방향을 따라간다
+    const want = G.mouse.on ? Math.atan2(G.mouse.y - p.y, G.mouse.x - p.x) : p.facing;
+    p.aim += clamp(angDiff(want, p.aim), -14 * dt, 14 * dt);
+
     if (p.invuln > 0) p.invuln -= dt;
     if (p.recoil > 0) p.recoil -= dt;
-    if (G.keys.fire) playerFire();
+    if (p.dashCd > 0) p.dashCd -= dt;
+    for (let i = 0; i < p.cds.length; i++) if (p.cds[i] > 0) p.cds[i] -= dt;
 
-    // beams fade
+    // 재머 영역 안에서는 에너지가 빠진다
+    p.jammed = false;
+    for (const e of G.enemies) if (e.jam && e.stun <= 0 && Math.hypot(e.x - p.x, e.y - p.y) < 175) { p.jammed = true; break; }
+    if (p.jammed) p.en = Math.max(0, p.en - 12 * dt);
+    else p.en = Math.min(p.maxEn, p.en + u.regen * (overdrive() ? 1.8 : 1) * dt);
+    if (u.repair) p.hp = Math.min(p.maxHp, p.hp + u.repair * dt);
+
+    const firing = G.keys.fire || G.mouse.down;
+    const wsel = WEAPONS[G.weaponSel];
+    p.lasering = false;
+    if (firing) playerFire(dt);
+    if (wsel.id !== 'rail' && p.railCharge > 0) p.railCharge = 0;
+    if (!firing && wsel.id === 'rail' && p.railCharge > 0) releaseRail();
+
     for (let i = G.beams.length - 1; i >= 0; i--) {
       G.beams[i].life -= dt;
       if (G.beams[i].life <= 0) G.beams.splice(i, 1);
     }
-
-    // player bullets
-    for (let i = G.bullets.length - 1; i >= 0; i--) {
-      const b = G.bullets[i];
-      if (b.homing) steerBullet(b, G.enemies, b.turn, dt);
-      else if (b.softHome) steerBullet(b, G.enemies, b.turn * 0.45, dt);
-      b.x += b.vx * dt; b.y += b.vy * dt; b.life -= dt;
-      if (b.life <= 0 || b.x < -20 || b.x > W + 20 || b.y < HUD - 20 || b.y > H + 20) { G.bullets.splice(i, 1); continue; }
-      if (pointInWall(b.x, b.y)) {
-        if (b.explosive) explode(b.x, b.y, b.dmg);
-        else sparks(b.x, b.y, b.color, 4);
-        G.bullets.splice(i, 1); continue;
-      }
-      let removed = false;
-      for (const e of G.enemies) {
-        if (b.pierce && b.hit[e.id]) continue;
-        if ((e.x - b.x) ** 2 + (e.y - b.y) ** 2 < (e.size / 2 + b.size) ** 2) {
-          if (b.explosive) { explode(b.x, b.y, b.dmg); removed = true; break; }
-          damageEnemy(e, b.dmg); sparks(b.x, b.y, b.color, 3);
-          if (b.pierce) b.hit[e.id] = 1;
-          else { removed = true; break; }
-        }
-      }
-      if (removed) G.bullets.splice(i, 1);
+    for (let i = G.bolts.length - 1; i >= 0; i--) {
+      G.bolts[i].life -= dt;
+      if (G.bolts[i].life <= 0) G.bolts.splice(i, 1);
     }
 
-    // enemies
-    for (const e of G.enemies) {
-      e.dirTimer -= dt;
-      if (e.dirTimer <= 0) { chooseDir(e); e.dirTimer = 0.5 + Math.random() * 0.8; }
-      const ox = e.x, oy = e.y;
-      moveEntity(e, Math.cos(e.moveAngle) * e.speed * dt, Math.sin(e.moveAngle) * e.speed * dt);
-      if (Math.hypot(e.x - ox, e.y - oy) < e.speed * dt * 0.3) e.dirTimer = 0;
-      e.facing = Math.atan2(p.y - e.y, p.x - e.x);
-      if (e.flash > 0) e.flash -= dt;
-      e.fireTimer -= dt;
-      const d = Math.hypot(p.x - e.x, p.y - e.y);
-      if (e.fireTimer <= 0 && d < e.range) {
-        enemyFire(e);
-        e.fireTimer = e.fireCd * (0.8 + Math.random() * 0.5);
-      }
-    }
+    updatePlayerBullets(dt);
+    updateEnemies(dt);
+    updateEnemyBullets(dt);
+    updateShells(dt);
+    updateVortices(dt);
+    updateDrones(dt);
+    updateStrikes(dt);
+    updatePowerups(dt);
 
-    // enemy bullets
-    for (let i = G.ebullets.length - 1; i >= 0; i--) {
-      const b = G.ebullets[i];
-      if (b.homing) steerBullet(b, [p], b.turn, dt);
-      else if (b.softHome) steerBullet(b, [p], b.turn * 0.4, dt);
-      b.x += b.vx * dt; b.y += b.vy * dt; b.life -= dt;
-      if (b.life <= 0 || b.x < -20 || b.x > W + 20 || b.y < HUD - 20 || b.y > H + 20) { G.ebullets.splice(i, 1); continue; }
-      if (pointInWall(b.x, b.y)) { sparks(b.x, b.y, b.color, 3); G.ebullets.splice(i, 1); continue; }
-      if (p.invuln <= 0 && (p.x - b.x) ** 2 + (p.y - b.y) ** 2 < (p.size / 2 + b.size) ** 2) {
-        damagePlayer(b.dmg); sparks(b.x, b.y, b.color, 4); G.ebullets.splice(i, 1);
-      }
+    for (let i = G.pulses.length - 1; i >= 0; i--) {
+      const q = G.pulses[i]; q.life -= dt;
+      if (q.life <= 0) G.pulses.splice(i, 1);
     }
-
-    // powerups
-    for (let i = G.powerups.length - 1; i >= 0; i--) {
-      const pu = G.powerups[i]; pu.life -= dt;
-      if (pu.life <= 0) { G.powerups.splice(i, 1); continue; }
-      if ((p.x - pu.x) ** 2 + (p.y - pu.y) ** 2 < (p.size / 2 + 15) ** 2) {
-        if (pu.type === 'health') p.hp = Math.min(p.maxHp, p.hp + 35);
-        else G.weaponBoostUntil = G.now + 16;
-        sfx('power'); G.powerups.splice(i, 1);
-        for (let k = 0; k < 10; k++) {
-          G.particles.push({
-            x: pu.x, y: pu.y, vx: (Math.random() - .5) * 160, vy: (Math.random() - .5) * 160,
-            life: .5, maxLife: .5, color: pu.type === 'health' ? '#7dff9e' : '#ffd23f', size: 3,
-          });
-        }
-      }
-    }
-
     for (let i = G.particles.length - 1; i >= 0; i--) {
       const q = G.particles[i];
       q.x += q.vx * dt; q.y += q.vy * dt; q.vx *= 0.92; q.vy *= 0.92; q.life -= dt;
       if (q.life <= 0) G.particles.splice(i, 1);
     }
+    for (let i = G.toasts.length - 1; i >= 0; i--) {
+      G.toasts[i].life -= dt;
+      if (G.toasts[i].life <= 0) G.toasts.splice(i, 1);
+    }
+
+    // 스폰은 한 번에 몰리지 않게 간격을 둔다
+    G.spawnTimer -= dt;
+    if (G.spawnTimer <= 0) { spawnFill(); G.spawnTimer = 0.9; }
+    checkClear();
   }
+
+  function updatePlayerBullets(dt) {
+    for (let i = G.bullets.length - 1; i >= 0; i--) {
+      const b = G.bullets[i];
+      if (b.homing) steerBullet(b, G.enemies, b.turn, dt);
+      else if (b.softHome) steerBullet(b, G.enemies, b.turn * 0.45, dt);
+      b.x += b.vx * dt; b.y += b.vy * dt; b.life -= dt;
+      if (b.life <= 0 || b.x < -20 || b.x > W + 20 || b.y < HUD - 20 || b.y > H + 20) {
+        if (b.bomb && b.life <= 0) explode(b.x, b.y, b.dmg, b.explosive, '#7dff9e');
+        G.bullets.splice(i, 1); continue;
+      }
+      if (!b.bomb && pointInWall(b.x, b.y)) {
+        if (b.explosive) explode(b.x, b.y, b.dmg, b.explosive);
+        else sparks(b.x, b.y, b.color, 3);
+        G.bullets.splice(i, 1); continue;
+      }
+      let removed = false;
+      for (const e of G.enemies) {
+        if (b.hit[e.id]) continue;
+        if ((e.x - b.x) ** 2 + (e.y - b.y) ** 2 < (e.size / 2 + b.size) ** 2) {
+          if (b.explosive) { explode(b.x, b.y, b.dmg, b.explosive, b.bomb ? '#7dff9e' : undefined); removed = true; break; }
+          if (shieldBlocks(e, b.x - b.vx * 0.05, b.y - b.vy * 0.05)) { shieldSpark(e, b.x, b.y); removed = true; break; }
+          damageEnemy(e, b.dmg); sparks(b.x, b.y, b.color, 2);
+          if (b.knock && !e.boss) {
+            const l = Math.hypot(b.vx, b.vy) || 1;
+            moveEntity(e, b.vx / l * b.knock * 0.16, b.vy / l * b.knock * 0.16);
+          }
+          b.hit[e.id] = 1;
+          if (!b.pierce) { removed = true; break; }
+        }
+      }
+      if (removed) G.bullets.splice(i, 1);
+    }
+  }
+
+  function updateEnemies(dt) {
+    const p = G.player;
+    for (const e of [...G.enemies]) {
+      if (e.flash > 0) e.flash -= dt;
+      if (e.shieldDown > 0) { e.shieldDown -= dt; if (e.shieldDown <= 0 && ENEMY[e.type].shield) e.shieldUp = true; }
+      if (e.stun > 0) {
+        e.stun -= dt;
+        e.aiming = 0; e.sweep = 0;
+        if (Math.random() < 0.3) sparks(e.x + rnd(-e.size / 2, e.size / 2), e.y + rnd(-e.size / 2, e.size / 2), '#5ad1ff', 1);
+        continue;
+      }
+      const spMul = e.slow > 0 ? 0.45 : 1;
+      if (e.slow > 0) e.slow -= dt;
+
+      if (e.minion) {
+        // 자폭 드론: 플레이어를 향해 돌진, 벽은 넘어간다
+        const a = Math.atan2(p.y - e.y, p.x - e.x);
+        e.facing += clamp(angDiff(a, e.facing), -5 * dt, 5 * dt);
+        e.x += Math.cos(e.facing) * e.speed * spMul * dt;
+        e.y += Math.sin(e.facing) * e.speed * spMul * dt;
+        e.aim = e.facing;
+        if (Math.hypot(p.x - e.x, p.y - e.y) < p.size / 2 + e.size / 2) {
+          if (!playerSafe()) damagePlayer(e.dmg);
+          boom(e.x, e.y, e.color, 10); sfx('explode');
+          removeEnemy(e, false);
+        }
+        continue;
+      }
+
+      // 저격 조준 중에는 멈춰서 예고선을 보여준다
+      if (e.aiming > 0) {
+        e.aiming -= dt;
+        e.aim = e.aimLock;
+        if (e.aiming <= 0) {
+          fireBeam(muzzle(e, e.aimLock), e.aimLock, { dmg: e.dmg * (e.boss ? 1.2 : 1), range: 1000, width: 4, color: '#c79bff', life: 0.14 }, false);
+          sfx('elaser');
+        }
+        continue;
+      }
+      if (e.sweep > 0) {
+        // 보스 레이저 스윕
+        e.sweep -= dt;
+        e.sweepA += 1.15 * dt;
+        e.aim = e.sweepA;
+        fireBeam(muzzle(e, e.sweepA), e.sweepA, { dmg: e.dmg * 1.6 * dt * 3, range: 1000, width: 5, color: '#ff3fa4', life: 0.04 }, false);
+        continue;
+      }
+
+      e.dirTimer -= dt;
+      if (e.dirTimer <= 0) { chooseDir(e); e.dirTimer = 0.5 + Math.random() * 0.8; }
+      const ox = e.x, oy = e.y;
+      moveEntity(e, Math.cos(e.moveAngle) * e.speed * spMul * dt, Math.sin(e.moveAngle) * e.speed * spMul * dt);
+      const moved = Math.hypot(e.x - ox, e.y - oy);
+      if (moved < e.speed * spMul * dt * 0.3) e.dirTimer = 0;
+      else e.facing += clamp(angDiff(e.moveAngle, e.facing), -6 * dt, 6 * dt);
+      const want = Math.atan2(p.y - e.y, p.x - e.x);
+      // 실드 전차는 포탑이 느리게 돌아서 측면을 노릴 수 있다
+      const turn = e.shieldUp ? 1.6 : 5;
+      e.aim += clamp(angDiff(want, e.aim), -turn * dt, turn * dt);
+      e.fireTimer -= dt;
+      const d = Math.hypot(p.x - e.x, p.y - e.y);
+      if (e.fireTimer <= 0 && d < e.range) {
+        enemyFire(e);
+        e.fireTimer = e.fireCd * (0.8 + Math.random() * 0.5) * (e.slow > 0 ? 1.6 : 1);
+      }
+    }
+  }
+
+  function updateEnemyBullets(dt) {
+    const p = G.player;
+    for (let i = G.ebullets.length - 1; i >= 0; i--) {
+      const b = G.ebullets[i];
+      if (!b) continue; // 피격 사망 시 배열이 비워질 수 있다
+      if (b.homing) steerBullet(b, [p], b.turn, dt);
+      else if (b.softHome) steerBullet(b, [p], b.turn * 0.4, dt);
+      b.x += b.vx * dt; b.y += b.vy * dt; b.life -= dt;
+      if (b.life <= 0 || b.x < -20 || b.x > W + 20 || b.y < HUD - 20 || b.y > H + 20) { G.ebullets.splice(i, 1); continue; }
+      if (pointInWall(b.x, b.y)) { sparks(b.x, b.y, b.color, 3); G.ebullets.splice(i, 1); continue; }
+      if (!playerSafe() && (p.x - b.x) ** 2 + (p.y - b.y) ** 2 < (p.size / 2 + b.size) ** 2) {
+        damagePlayer(b.dmg); sparks(b.x, b.y, b.color, 4); G.ebullets.splice(i, 1);
+        if (b.emp) { p.en = Math.max(0, p.en - 30); toast('ENERGY DRAINED', '#d05cff', 1); }
+      }
+    }
+  }
+
+  function updateShells(dt) {
+    for (let i = G.shells.length - 1; i >= 0; i--) {
+      const s = G.shells[i];
+      if (s.dead) { sparks(s.x1, s.y1, '#5ad1ff', 6); G.shells.splice(i, 1); continue; }
+      s.t += dt;
+      if (s.t >= s.dur) {
+        if (s.friendly) explode(s.x1, s.y1, s.dmg, s.r, s.color);
+        else {
+          const p = G.player;
+          if (!playerSafe() && Math.hypot(p.x - s.x1, p.y - s.y1) < s.r + p.size / 2 * 0.6) damagePlayer(s.dmg);
+          boom(s.x1, s.y1, '#ffb14d', 14); sfx('explode'); G.shake = Math.min(12, G.shake + 4);
+          G.particles.push({ ring: true, x: s.x1, y: s.y1, r: 6, maxr: s.r, life: .3, maxLife: .3, color: '#ff8a5b', vx: 0, vy: 0, size: 0 });
+        }
+        G.shells.splice(i, 1);
+      }
+    }
+  }
+
+  function updateVortices(dt) {
+    for (let i = G.vortices.length - 1; i >= 0; i--) {
+      const v = G.vortices[i];
+      v.life -= dt; v.rot += dt * 9;
+      v.vx *= 0.985; v.vy *= 0.985;
+      v.x += v.vx * dt; v.y += v.vy * dt;
+      if (v.x < 10 || v.x > W - 10) v.vx *= -1;
+      if (v.y < HUD + 10 || v.y > H - 10) v.vy *= -1;
+      for (const e of [...G.enemies]) {
+        const ddx = v.x - e.x, ddy = v.y - e.y, d = Math.hypot(ddx, ddy);
+        if (d < v.pull && d > 1) {
+          const force = (e.boss ? 25 : 120) * (1 - d / v.pull) + 30;
+          if (e.minion) { e.x += ddx / d * force * dt; e.y += ddy / d * force * dt; }
+          else moveEntity(e, ddx / d * force * dt, ddy / d * force * dt);
+        }
+        if (d < v.core + e.size / 2) damageEnemy(e, v.dps * dt);
+      }
+      // 적 탄을 흡수
+      for (let k = G.ebullets.length - 1; k >= 0; k--) {
+        const b = G.ebullets[k];
+        const d = Math.hypot(b.x - v.x, b.y - v.y);
+        if (d < v.core) { G.ebullets.splice(k, 1); continue; }
+        if (d < v.pull) { b.vx += (v.x - b.x) / d * 500 * dt; b.vy += (v.y - b.y) / d * 500 * dt; }
+      }
+      if (Math.random() < 0.5) {
+        const a = Math.random() * TAU, r = v.pull * rnd(0.6, 1);
+        G.particles.push({ x: v.x + Math.cos(a) * r, y: v.y + Math.sin(a) * r, vx: -Math.cos(a) * r * 2.2, vy: -Math.sin(a) * r * 2.2, life: 0.4, maxLife: 0.4, color: '#b388ff', size: 2 });
+      }
+      if (v.life <= 0) {
+        explode(v.x, v.y, v.burst, v.mini ? 70 : 110, '#b388ff');
+        if (v.split && !v.mini) {
+          for (let k = 0; k < 3; k++) {
+            const a = k * TAU / 3 + Math.random();
+            G.vortices.push({ x: v.x, y: v.y, vx: Math.cos(a) * 170, vy: Math.sin(a) * 170, life: 1.2, maxLife: 1.2, pull: 90, core: 34, dps: v.dps * 0.6, burst: v.burst * 0.5, split: false, mini: true, rot: 0 });
+          }
+        }
+        G.vortices.splice(i, 1);
+        sfx('implode');
+      }
+    }
+  }
+
+  function updateDrones(dt) {
+    const p = G.player;
+    const pm = powerMul();
+    for (let i = G.drones.length - 1; i >= 0; i--) {
+      const d = G.drones[i];
+      d.life -= dt; d.bob += dt * 6; d.orbit += dt * 2.2;
+      if (d.life <= 0) { sparks(d.x, d.y, '#7dff9e', 6); G.drones.splice(i, 1); continue; }
+      if (!d.target || G.enemies.indexOf(d.target) < 0) {
+        let best = null, bd = 1e9;
+        for (const e of G.enemies) {
+          const taken = G.drones.some(o => o !== d && o.target === e) ? 160 : 0;
+          const dist = Math.hypot(e.x - d.x, e.y - d.y) + taken;
+          if (dist < bd) { bd = dist; best = e; }
+        }
+        d.target = best;
+      }
+      let tx, ty;
+      if (d.target) { tx = d.target.x + Math.cos(d.orbit) * 46; ty = d.target.y + Math.sin(d.orbit) * 46; }
+      else { tx = p.x + Math.cos(d.orbit) * 50; ty = p.y + Math.sin(d.orbit) * 50; }
+      const ddx = tx - d.x, ddy = ty - d.y, dist = Math.hypot(ddx, ddy);
+      const sp = Math.min(dist / dt, 260);
+      if (dist > 0.5) { d.x += ddx / dist * sp * dt; d.y += ddy / dist * sp * dt; }
+      d.bombCd -= dt;
+      if (d.target && d.bombCd <= 0 && Math.hypot(d.target.x - d.x, d.target.y - d.y) < 120) {
+        d.bombCd = 1.0;
+        const a = Math.atan2(d.target.y - d.y, d.target.x - d.x);
+        const b = mkBullet(d.x, d.y, a, 170, { dmg: 4 * pm, color: '#7dff9e', size: 4, life: 1.4, homing: true, turn: 6, explosive: 42, friendly: true, bomb: true });
+        G.bullets.push(b);
+        sfx('bomb');
+      }
+    }
+  }
+
+  function updateStrikes(dt) {
+    for (let i = G.strikes.length - 1; i >= 0; i--) {
+      const s = G.strikes[i];
+      if (s.delay > 0) {
+        s.delay -= dt;
+        if (s.delay <= 0) {
+          s.fire = 0.35;
+          for (const e of [...G.enemies]) {
+            if (Math.hypot(e.x - s.x, e.y - s.y) < s.r + e.size / 2) {
+              damageEnemy(e, s.dmg);
+              if (G.enemies.indexOf(e) >= 0) e.stun = Math.max(e.stun, e.boss ? 0.5 : 1.2);
+            }
+          }
+          boom(s.x, s.y, '#ffd23f', 34); boom(s.x, s.y, '#ffffff', 12);
+          G.particles.push({ ring: true, x: s.x, y: s.y, r: 10, maxr: s.r * 1.25, life: .45, maxLife: .45, color: '#ffd23f', vx: 0, vy: 0, size: 0 });
+          G.shake = Math.min(20, G.shake + 12);
+          sfx('orbital');
+        }
+      } else {
+        s.fire -= dt;
+        if (s.fire <= 0) G.strikes.splice(i, 1);
+      }
+    }
+  }
+
+  function updatePowerups(dt) {
+    const p = G.player;
+    for (let i = G.powerups.length - 1; i >= 0; i--) {
+      const pu = G.powerups[i]; pu.life -= dt;
+      if (pu.life <= 0) { G.powerups.splice(i, 1); continue; }
+      if ((p.x - pu.x) ** 2 + (p.y - pu.y) ** 2 < (p.size / 2 + 15) ** 2) {
+        const col = PU_COLOR[pu.type];
+        if (pu.type === 'health') { p.hp = Math.min(p.maxHp, p.hp + 35); toast('+35 HP', col, 1); }
+        else if (pu.type === 'energy') { p.en = p.maxEn; toast('ENERGY FULL', col, 1); }
+        else { G.overdriveUntil = G.now + 10; toast('OVERDRIVE ▸ 10s', col, 1.6); }
+        sfx('power'); G.powerups.splice(i, 1);
+        for (let k = 0; k < 10; k++) {
+          G.particles.push({ x: pu.x, y: pu.y, vx: (Math.random() - .5) * 160, vy: (Math.random() - .5) * 160, life: .5, maxLife: .5, color: col, size: 3 });
+        }
+      }
+    }
+  }
+  const PU_COLOR = { health: '#7dff9e', energy: '#5ad1ff', overdrive: '#ffd23f' };
 
   function chooseDir(e) {
     const p = G.player;
     const ang = Math.atan2(p.y - e.y, p.x - e.x);
     const d = Math.hypot(p.x - e.x, p.y - e.y);
     let target;
-    if (e.type === 'sniper') target = d < e.range * 0.55 ? ang + Math.PI + (Math.random() - 0.5) : ang + (Math.random() - 0.5) * 0.6;
-    else if (e.type === 'heavy' || e.boss) target = ang + (Math.random() - 0.5) * 0.5;
+    if (e.type === 'sniper' || e.type === 'mortar' || e.type === 'carrier') {
+      target = d < 300 ? ang + Math.PI + (Math.random() - 0.5) : ang + (Math.PI / 2) * (Math.random() < 0.5 ? 1 : -1) + (Math.random() - 0.5) * 0.6;
+    } else if (e.type === 'heavy' || e.type === 'shield' || e.boss) target = ang + (Math.random() - 0.5) * 0.5;
+    else if (e.type === 'jammer') target = d > 140 ? ang + (Math.random() - 0.5) * 0.4 : ang + Math.PI / 2;
     else target = d < 190 ? ang + (Math.random() < 0.5 ? 1 : -1) * (Math.PI / 2) + (Math.random() - 0.5) * 0.6 : ang + (Math.random() - 0.5) * 0.8;
     e.moveAngle = target;
   }
 
   function damageEnemy(e, dmg) {
-    e.hp -= dmg; e.flash = 0.1;
-    if (e.hp <= 0) killEnemy(e); else sfx('hit');
+    if (G.enemies.indexOf(e) < 0) return;
+    e.hp -= dmg; e.flash = 0.08;
+    if (e.hp <= 0) killEnemy(e);
+    else if (dmg >= 1 && Math.random() < 0.6) sfx('hit');
+  }
+  function shieldSpark(e, x, y) {
+    const a = Math.atan2(y - e.y, x - e.x);
+    sparks(e.x + Math.cos(a) * (e.size / 2 + 8), e.y + Math.sin(a) * (e.size / 2 + 8), '#8fb8ff', 3);
+    e.shieldFlash = 0.15;
+    if (Math.random() < 0.3) sfx('deflect');
+  }
+  function removeEnemy(e) {
+    const i = G.enemies.indexOf(e); if (i >= 0) G.enemies.splice(i, 1);
   }
   function killEnemy(e) {
     const i = G.enemies.indexOf(e); if (i < 0) return;
-    G.enemies.splice(i, 1); G.killed++; G.score += e.score;
-    boom(e.x, e.y, e.color, e.boss ? 26 : 14); sfx('explode'); G.shake = Math.min(14, G.shake + (e.boss ? 12 : 5));
-    if (e.boss || Math.random() < 0.16) G.powerups.push({ x: e.x, y: e.y, type: Math.random() < 0.5 ? 'health' : 'weapon', life: 12 });
+    G.enemies.splice(i, 1);
+    if (!e.minion) G.killed++;
+    G.score += e.score;
+    boom(e.x, e.y, e.color, e.boss ? 40 : e.minion ? 8 : 14); sfx('explode');
+    G.shake = Math.min(16, G.shake + (e.boss ? 14 : e.minion ? 2 : 5));
+    if (e.boss) {
+      G.powerups.push({ x: e.x - 24, y: e.y, type: 'health', life: 14 });
+      G.powerups.push({ x: e.x + 24, y: e.y, type: 'overdrive', life: 14 });
+    } else if (!e.minion && Math.random() < 0.2) {
+      const r = Math.random();
+      G.powerups.push({ x: e.x, y: e.y, type: r < 0.4 ? 'health' : r < 0.8 ? 'energy' : 'overdrive', life: 12 });
+    }
     spawnFill();
-    if (G.spawnQueue.length === 0 && G.enemies.length === 0) onLevelClear();
+  }
+  function checkClear() {
+    if (G.screen !== 'playing') return;
+    if (G.spawnQueue.length === 0 && !G.enemies.some(e => !e.minion)) {
+      for (const e of [...G.enemies]) { boom(e.x, e.y, e.color, 6); removeEnemy(e); }
+      onLevelClear();
+    }
   }
   function damagePlayer(dmg) {
-    const p = G.player; if (p.invuln > 0) return;
-    p.hp -= dmg; sfx('hit'); G.shake = Math.min(12, G.shake + 4);
+    const p = G.player; if (playerSafe()) return;
+    dmg *= 1 - G.up.armor;
+    p.hp -= dmg; sfx('phit'); G.shake = Math.min(12, G.shake + 4);
     for (let k = 0; k < 6; k++) {
       G.particles.push({ x: p.x, y: p.y, vx: (Math.random() - .5) * 140, vy: (Math.random() - .5) * 140, life: .4, maxLife: .4, color: '#ff8a5b', size: 3 });
     }
@@ -656,8 +1241,24 @@
     boom(G.player.x, G.player.y, '#35e0d8', 22); sfx('explode'); G.shake = 16;
     G.lives--;
     if (G.lives <= 0) gameOver();
-    else { const p = G.player; p.hp = p.maxHp; p.x = W / 2; p.y = H - 70; p.invuln = 2.2; }
+    else {
+      const p = G.player; p.hp = p.maxHp; p.en = p.maxEn; p.x = W / 2; p.y = H - 70; p.invuln = 2.4;
+      while (hitsWall(p.x, p.y, p.size)) p.y -= 10;
+      G.ebullets.length = 0;
+    }
   }
+  function tryDash() {
+    const p = G.player;
+    if (!p || p.dashCd > 0 || p.dashT > 0) return;
+    let dx = (G.keys.right ? 1 : 0) - (G.keys.left ? 1 : 0);
+    let dy = (G.keys.down ? 1 : 0) - (G.keys.up ? 1 : 0);
+    if (!dx && !dy) { dx = Math.cos(p.facing); dy = Math.sin(p.facing); }
+    const l = Math.hypot(dx, dy); p.dashX = dx / l; p.dashY = dy / l;
+    p.dashT = 0.17; p.dashCd = G.up.dashCd;
+    sfx('dash');
+  }
+
+  /* ---------- level clear & upgrade cards ---------- */
   function onLevelClear() {
     if (G.level >= 20) { onWin(); return; }
     const bonus = G.level * 200 + Math.round(G.player.hp * 2);
@@ -665,13 +1266,69 @@
     document.getElementById('clear-level').textContent = 'LEVEL ' + G.level;
     document.getElementById('clear-bonus').textContent = '+' + fmt(bonus);
     document.getElementById('clear-score').textContent = fmt(G.score);
-    const nextW = WEAPONS[tierForLevel(G.level + 1)];
-    document.getElementById('clear-weapon').textContent = nextW.name;
-    document.getElementById('btn-next').textContent = 'LEVEL ' + (G.level + 1) + ' ▶';
+    const nw = WEAPONS.find(w => w.unlock === G.level + 1);
+    document.getElementById('clear-unlock').textContent = nw ? '다음 섹터 신무기 해금 ▸ ' + nw.name + ' — ' + nw.desc : '';
+    G.cards = rollCards();
+    renderCards();
     setScreen('clear');
   }
+
+  /** 업그레이드 카드 풀에서 3장 뽑기. 무기 강화 카드가 최소 1장은 나오게 한다. */
+  function rollCards() {
+    const u = G.up;
+    const weaponCards = [];
+    WEAPONS.forEach((w, i) => {
+      if (w.unlock <= G.level + 1 && u.mk[i] < 3) {
+        weaponCards.push({
+          tag: 'WEAPON', color: w.color, title: w.name + ' Mk ' + ['I', 'II', 'III'][u.mk[i]],
+          desc: w.mkDesc[u.mk[i] - 1], apply: () => { u.mk[i]++; },
+        });
+      }
+    });
+    const stat = [
+      { tag: 'HULL', color: '#7dff9e', title: '강화 장갑판', desc: '최대 체력 +25, 즉시 수리', ok: u.maxHp < 200, apply: () => { u.maxHp += 25; G.player.hp = Infinity; } },
+      { tag: 'CORE', color: '#5ad1ff', title: '고용량 셀', desc: '최대 에너지 +25', ok: u.maxEn < 200, apply: () => { u.maxEn += 25; } },
+      { tag: 'CORE', color: '#5ad1ff', title: '반응로 과급', desc: '에너지 재생 +30%', ok: u.regen < 35, apply: () => { u.regen *= 1.3; } },
+      { tag: 'HULL', color: '#9fb0c0', title: '반응 장갑', desc: '받는 피해 -10%', ok: u.armor < 0.35, apply: () => { u.armor += 0.1; } },
+      { tag: 'DRIVE', color: '#35e0d8', title: '터빈 엔진', desc: '이동 속도 +10%, 대시 쿨다운 -15%', ok: u.speed < 1.4, apply: () => { u.speed += 0.1; u.dashCd *= 0.85; } },
+      { tag: 'FIRE', color: '#ff8a5b', title: '자동 장전기', desc: '모든 무기 연사 +12%', ok: u.fireRate < 1.5, apply: () => { u.fireRate *= 1.12; } },
+      { tag: 'HULL', color: '#7dff9e', title: '나노 수리', desc: '초당 체력 +1.5 자동 회복', ok: u.repair < 3, apply: () => { u.repair += 1.5; } },
+      { tag: 'RARE', color: '#ffd23f', title: '예비 차체', desc: '목숨 +1', ok: G.lives < 5 && Math.random() < 0.35, apply: () => { G.lives++; } },
+    ].filter(c => c.ok);
+    const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = (Math.random() * (i + 1)) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
+    shuffle(weaponCards); shuffle(stat);
+    const out = [];
+    if (weaponCards.length) out.push(weaponCards.shift());
+    const rest = shuffle([...weaponCards, ...stat]);
+    while (out.length < 3 && rest.length) out.push(rest.shift());
+    return shuffle(out);
+  }
+
+  function renderCards() {
+    const box = document.getElementById('cards');
+    box.innerHTML = '';
+    G.cards.forEach((c, i) => {
+      const el = document.createElement('button');
+      el.className = 'card';
+      el.style.borderColor = c.color + '66';
+      el.innerHTML = `<div class="k">[${i + 1}]</div><div class="tag" style="color:${c.color}">${c.tag}</div><div class="t" style="color:${c.color}">${c.title}</div><div class="d">${c.desc}</div>`;
+      el.onclick = () => pickCard(i);
+      box.appendChild(el);
+    });
+  }
+
+  function pickCard(i) {
+    if (G.screen !== 'clear' || !G.cards[i]) return;
+    G.cards[i].apply();
+    G.cards = [];
+    sfx('power');
+    setupLevel(G.level + 1);
+    setScreen('playing');
+    G.last = performance.now() / 1000;
+  }
+
   function onWin() {
-    const bonus = 4000 + Math.round(G.player.hp * 3);
+    const bonus = 5000 + Math.round(G.player.hp * 3);
     G.score += bonus; updateHi(); sfx('win');
     document.getElementById('win-score').textContent = fmt(G.score);
     setScreen('win');
@@ -690,21 +1347,22 @@
     }
   }
 
-  function explode(x, y, dmg) {
-    const R = 72;
-    for (const e of [...G.enemies]) if ((e.x - x) ** 2 + (e.y - y) ** 2 < R * R) damageEnemy(e, dmg + 1);
-    boom(x, y, '#ffb14d', 20); G.shake = Math.min(15, G.shake + 7); sfx('explode');
-    G.particles.push({ ring: true, x, y, r: 6, maxr: R, life: .32, maxLife: .32, color: '#ffd23f', vx: 0, vy: 0, size: 0 });
+  function explode(x, y, dmg, R, color) {
+    R = R || 72;
+    for (const e of [...G.enemies]) if ((e.x - x) ** 2 + (e.y - y) ** 2 < (R + e.size / 2) ** 2) damageEnemy(e, dmg);
+    boom(x, y, color || '#ffb14d', R > 80 ? 26 : 16); G.shake = Math.min(15, G.shake + R / 14); sfx('explode');
+    G.particles.push({ ring: true, x, y, r: 6, maxr: R, life: .32, maxLife: .32, color: color || '#ffd23f', vx: 0, vy: 0, size: 0 });
   }
   function boom(x, y, color, cnt) {
     for (let k = 0; k < cnt; k++) {
-      const a = Math.random() * Math.PI * 2, s = 40 + Math.random() * 220;
+      const a = Math.random() * TAU, s = 40 + Math.random() * 220;
       G.particles.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, life: .5 + Math.random() * .3, maxLife: .8, color, size: 2 + Math.random() * 2.5 });
     }
+    if (G.particles.length > 900) G.particles.splice(0, G.particles.length - 900);
   }
   function sparks(x, y, color, cnt) {
     for (let k = 0; k < cnt; k++) {
-      const a = Math.random() * Math.PI * 2, s = 30 + Math.random() * 90;
+      const a = Math.random() * TAU, s = 30 + Math.random() * 90;
       G.particles.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, life: .25, maxLife: .25, color, size: 1.5 + Math.random() * 1.5 });
     }
   }
@@ -716,16 +1374,17 @@
     try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (_) {}
     if (actx && actx.state === 'suspended') actx.resume();
   }
-  function beep(f, d, vol, wave, at) {
+  function beep(f, d, vol, wave, at, f2) {
     if (!actx) return;
     const t = actx.currentTime + (at || 0);
     const o = actx.createOscillator(), g = actx.createGain();
     o.connect(g); g.connect(actx.destination);
     o.type = wave || 'square'; o.frequency.setValueAtTime(f, t);
+    if (f2) o.frequency.exponentialRampToValueAtTime(f2, t + d);
     g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
     o.start(t); o.stop(t + d);
   }
-  function noise(d, vol) {
+  function noise(d, vol, freq) {
     if (!actx) return;
     const t = actx.currentTime;
     const n = Math.floor(actx.sampleRate * d);
@@ -734,24 +1393,41 @@
     for (let i = 0; i < n; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / n);
     const src = actx.createBufferSource(); src.buffer = buf;
     const g = actx.createGain(); g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
-    const f = actx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 1200;
+    const f = actx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = freq || 1200;
     src.connect(f); f.connect(g); g.connect(actx.destination); src.start(t);
   }
+  let lastExplode = 0;
   function sfx(type) {
     if (!actx) return;
     try {
       switch (type) {
-        case 'shoot': beep(660, 0.06, 0.045, 'square'); break;
-        case 'laser': beep(880, 0.05, 0.04, 'sawtooth'); beep(1200, 0.04, 0.03, 'square', 0.02); break;
-        case 'swarm': beep(520, 0.04, 0.03, 'triangle'); beep(640, 0.04, 0.03, 'triangle', 0.03); break;
-        case 'missile': beep(220, 0.1, 0.04, 'sawtooth'); break;
-        case 'omega': beep(180, 0.08, 0.05, 'sawtooth'); beep(900, 0.06, 0.04, 'square', 0.04); break;
-        case 'eshoot': beep(250, 0.08, 0.03, 'sawtooth'); break;
-        case 'elaser': beep(400, 0.06, 0.03, 'sawtooth'); break;
+        case 'shoot': beep(660, 0.06, 0.04, 'square'); break;
+        case 'scatter': noise(0.12, 0.08, 2400); beep(300, 0.06, 0.03, 'square'); break;
+        case 'mortar': beep(140, 0.18, 0.05, 'sine', 0, 70); break;
+        case 'tesla': noise(0.1, 0.06, 5000); beep(1400, 0.08, 0.025, 'sawtooth', 0, 500); break;
+        case 'laserhum': beep(330, 0.06, 0.015, 'sawtooth'); break;
+        case 'swirl': beep(200, 0.35, 0.05, 'sine', 0, 700); break;
+        case 'implode': beep(800, 0.25, 0.05, 'sine', 0, 80); noise(0.2, 0.06, 900); break;
+        case 'emp': beep(90, 0.5, 0.08, 'sawtooth', 0, 40); noise(0.4, 0.08, 3000); break;
+        case 'drone': beep(500, 0.08, 0.03, 'triangle'); beep(750, 0.08, 0.03, 'triangle', 0.08); break;
+        case 'bomb': beep(900, 0.12, 0.02, 'sine', 0, 300); break;
+        case 'rail': beep(1800, 0.25, 0.05, 'sawtooth', 0, 120); noise(0.15, 0.08, 6000); break;
+        case 'lock': [1200, 1200, 1600].forEach((f, i) => beep(f, 0.06, 0.03, 'square', i * 0.12)); break;
+        case 'orbital': noise(0.6, 0.14, 700); beep(60, 0.5, 0.08, 'sawtooth'); break;
+        case 'dash': beep(300, 0.12, 0.04, 'sine', 0, 900); break;
+        case 'empty': beep(120, 0.08, 0.04, 'square'); break;
+        case 'deflect': beep(1600, 0.04, 0.02, 'triangle'); break;
+        case 'charge': beep(400, 0.5, 0.025, 'sine', 0, 1400); break;
+        case 'eshoot': beep(250, 0.08, 0.025, 'sawtooth'); break;
+        case 'elaser': beep(400, 0.12, 0.04, 'sawtooth', 0, 150); break;
         case 'emissile': beep(180, 0.1, 0.03, 'sawtooth'); break;
-        case 'hit': beep(170, 0.05, 0.045, 'square'); break;
-        case 'explode': noise(0.28, 0.10); break;
+        case 'hit': beep(170, 0.04, 0.03, 'square'); break;
+        case 'phit': beep(110, 0.08, 0.06, 'square'); break;
+        case 'explode':
+          if (G.now - lastExplode < 0.05) break;
+          lastExplode = G.now; noise(0.28, 0.10); break;
         case 'power': beep(520, 0.07, 0.05, 'triangle', 0); beep(780, 0.09, 0.05, 'triangle', 0.07); break;
+        case 'swap': beep(880, 0.03, 0.025, 'square'); break;
         case 'clear': [523, 659, 784, 1046].forEach((f, i) => beep(f, 0.12, 0.05, 'square', i * 0.09)); break;
         case 'win': [523, 659, 784, 1046, 1318].forEach((f, i) => beep(f, 0.16, 0.05, 'square', i * 0.12)); break;
         case 'over': [440, 330, 262, 196].forEach((f, i) => beep(f, 0.18, 0.06, 'sawtooth', i * 0.13)); break;
@@ -790,17 +1466,19 @@
 
   function drawPowerup(pu) {
     const t = G.now * 3, yo = Math.sin(t) * 2;
-    const col = pu.type === 'health' ? '#7dff9e' : '#ffd23f';
+    const col = PU_COLOR[pu.type];
     ctx.save(); ctx.translate(pu.x, pu.y + yo);
     ctx.globalAlpha = pu.life < 2 ? (0.4 + 0.6 * Math.abs(Math.sin(G.now * 8))) : 1;
     ctx.fillStyle = 'rgba(0,0,0,0.5)'; ctx.strokeStyle = col; ctx.lineWidth = 2;
     ctx.beginPath(); ctx.arc(0, 0, 13, 0, 7); ctx.fill(); ctx.stroke();
     ctx.fillStyle = col;
     if (pu.type === 'health') { ctx.fillRect(-2.5, -7, 5, 14); ctx.fillRect(-7, -2.5, 14, 5); }
-    else {
+    else if (pu.type === 'energy') {
+      ctx.beginPath(); ctx.moveTo(2, -8); ctx.lineTo(-5, 1); ctx.lineTo(0, 1); ctx.lineTo(-2, 8); ctx.lineTo(5, -1); ctx.lineTo(0, -1); ctx.closePath(); ctx.fill();
+    } else {
       ctx.beginPath();
       for (let i = 0; i < 5; i++) {
-        const a = -Math.PI / 2 + i * 2 * Math.PI / 5;
+        const a = -Math.PI / 2 + i * TAU / 5;
         ctx.lineTo(Math.cos(a) * 7, Math.sin(a) * 7);
         const a2 = a + Math.PI / 5;
         ctx.lineTo(Math.cos(a2) * 3, Math.sin(a2) * 3);
@@ -815,8 +1493,14 @@
       const ang = Math.atan2(b.vy, b.vx);
       ctx.save(); ctx.translate(b.x, b.y); ctx.rotate(ang);
       ctx.fillStyle = b.color;
-      ctx.beginPath(); ctx.moveTo(8, 0); ctx.lineTo(-6, -4); ctx.lineTo(-4, 0); ctx.lineTo(-6, 4); ctx.closePath(); ctx.fill();
-      ctx.fillStyle = '#fff'; ctx.fillRect(-2, -1.5, 4, 3);
+      if (b.emp) {
+        ctx.globalAlpha = 0.35; ctx.beginPath(); ctx.arc(0, 0, b.size + 4, 0, 7); ctx.fill();
+        ctx.globalAlpha = 1; ctx.beginPath(); ctx.arc(0, 0, b.size, 0, 7); ctx.fill();
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(0, 0, b.size * 0.5, G.now * 8, G.now * 8 + 4); ctx.stroke();
+      } else {
+        ctx.beginPath(); ctx.moveTo(8, 0); ctx.lineTo(-6, -4); ctx.lineTo(-4, 0); ctx.lineTo(-6, 4); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#fff'; ctx.fillRect(-2, -1.5, 4, 3);
+      }
       ctx.restore();
     } else {
       ctx.globalAlpha = 0.28; ctx.fillStyle = b.color; ctx.beginPath(); ctx.arc(b.x, b.y, b.size + 3, 0, 7); ctx.fill();
@@ -826,18 +1510,132 @@
   }
 
   function drawBeams() {
+    ctx.lineCap = 'round';
     for (const b of G.beams) {
       const a = Math.max(0, b.life / b.maxLife);
-      ctx.save();
       ctx.globalAlpha = a * 0.35;
-      ctx.strokeStyle = b.color; ctx.lineWidth = (b.width || 3) + 6; ctx.lineCap = 'round';
+      ctx.strokeStyle = b.color; ctx.lineWidth = (b.width || 3) + 6;
       ctx.beginPath(); ctx.moveTo(b.x0, b.y0); ctx.lineTo(b.x1, b.y1); ctx.stroke();
       ctx.globalAlpha = a;
-      ctx.strokeStyle = b.color; ctx.lineWidth = b.width || 3;
+      ctx.lineWidth = b.width || 3;
       ctx.beginPath(); ctx.moveTo(b.x0, b.y0); ctx.lineTo(b.x1, b.y1); ctx.stroke();
       ctx.strokeStyle = '#ffffff'; ctx.lineWidth = Math.max(1, (b.width || 3) * 0.35);
       ctx.beginPath(); ctx.moveTo(b.x0, b.y0); ctx.lineTo(b.x1, b.y1); ctx.stroke();
+    }
+    for (const b of G.bolts) {
+      const a = Math.max(0, b.life / b.maxLife);
+      for (const [lw, col, al] of [[5, b.color, 0.3], [2, '#ffffff', 1]]) {
+        ctx.globalAlpha = a * al; ctx.strokeStyle = col; ctx.lineWidth = lw;
+        ctx.beginPath(); ctx.moveTo(b.pts[0][0], b.pts[0][1]);
+        for (let k = 1; k < b.pts.length; k++) ctx.lineTo(b.pts[k][0], b.pts[k][1]);
+        ctx.stroke();
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  function drawShells() {
+    for (const s of G.shells) {
+      const t = Math.min(1, s.t / s.dur);
+      // 착탄 지점 예고
+      ctx.globalAlpha = s.friendly ? 0.25 : 0.35 + 0.35 * t;
+      ctx.strokeStyle = s.friendly ? s.color : '#ff4d5e'; ctx.lineWidth = 1.5;
+      ctx.setLineDash([5, 5]);
+      ctx.beginPath(); ctx.arc(s.x1, s.y1, s.r, 0, TAU); ctx.stroke();
+      ctx.setLineDash([]);
+      if (!s.friendly) {
+        ctx.fillStyle = '#ff4d5e'; ctx.globalAlpha = 0.12 * t + 0.04;
+        ctx.beginPath(); ctx.arc(s.x1, s.y1, s.r * t, 0, TAU); ctx.fill();
+      }
+      const x = s.x0 + (s.x1 - s.x0) * t, y = s.y0 + (s.y1 - s.y0) * t;
+      const h = Math.sin(t * Math.PI) * s.arc;
+      ctx.globalAlpha = 0.35; ctx.fillStyle = '#000';
+      ctx.beginPath(); ctx.ellipse(x, y, 6, 3, 0, 0, TAU); ctx.fill();
+      ctx.globalAlpha = 1; ctx.fillStyle = s.friendly ? s.color : '#ffb14d';
+      ctx.beginPath(); ctx.arc(x, y - h, 5 + h / 40, 0, TAU); ctx.fill();
+      ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(x, y - h, 2, 0, TAU); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  function drawVortices() {
+    for (const v of G.vortices) {
+      const a = Math.min(1, v.life / 0.3);
+      ctx.save(); ctx.translate(v.x, v.y);
+      ctx.globalAlpha = 0.12 * a; ctx.fillStyle = '#b388ff';
+      ctx.beginPath(); ctx.arc(0, 0, v.pull, 0, TAU); ctx.fill();
+      ctx.globalAlpha = 0.9 * a; ctx.strokeStyle = '#d6c2ff'; ctx.lineWidth = 2;
+      for (let k = 0; k < 4; k++) {
+        ctx.beginPath();
+        for (let s = 0; s <= 24; s++) {
+          const t = s / 24, r = v.core * (1 - t) + 4, ang = v.rot + k * TAU / 4 + t * 4;
+          if (s === 0) ctx.moveTo(Math.cos(ang) * r, Math.sin(ang) * r); else ctx.lineTo(Math.cos(ang) * r, Math.sin(ang) * r);
+        }
+        ctx.stroke();
+      }
+      ctx.fillStyle = '#1a0d33'; ctx.beginPath(); ctx.arc(0, 0, 8, 0, TAU); ctx.fill();
+      ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(0, 0, 8, 0, TAU); ctx.stroke();
       ctx.restore();
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  function drawDrones() {
+    for (const d of G.drones) {
+      const y = d.y - 18 + Math.sin(d.bob) * 2;
+      ctx.globalAlpha = 0.3; ctx.fillStyle = '#000';
+      ctx.beginPath(); ctx.ellipse(d.x, d.y, 9, 4, 0, 0, TAU); ctx.fill();
+      ctx.globalAlpha = d.life < 2 ? 0.5 + 0.5 * Math.abs(Math.sin(G.now * 10)) : 1;
+      ctx.save(); ctx.translate(d.x, y); ctx.rotate(G.now * 0.5);
+      ctx.strokeStyle = '#7dff9e'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(-9, -9); ctx.lineTo(9, 9); ctx.moveTo(9, -9); ctx.lineTo(-9, 9); ctx.stroke();
+      ctx.fillStyle = '#0f2a1a';
+      for (const [px, py] of [[-9, -9], [9, 9], [9, -9], [-9, 9]]) {
+        ctx.beginPath(); ctx.arc(px, py, 4, 0, TAU); ctx.fill();
+        ctx.strokeStyle = 'rgba(125,255,158,0.6)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(px, py, 4, G.now * 30, G.now * 30 + 2); ctx.stroke();
+      }
+      ctx.fillStyle = '#7dff9e'; ctx.fillRect(-4, -4, 8, 8);
+      ctx.restore();
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  function drawStrikes() {
+    for (const s of G.strikes) {
+      if (s.delay > 0) {
+        const t = 1 - s.delay / s.maxDelay;
+        ctx.globalAlpha = 0.6; ctx.strokeStyle = '#ffd23f'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, TAU); ctx.stroke();
+        ctx.beginPath(); ctx.arc(s.x, s.y, s.r * (1 - t), 0, TAU); ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(s.x - s.r - 10, s.y); ctx.lineTo(s.x - s.r * 0.4, s.y);
+        ctx.moveTo(s.x + s.r * 0.4, s.y); ctx.lineTo(s.x + s.r + 10, s.y);
+        ctx.moveTo(s.x, s.y - s.r - 10); ctx.lineTo(s.x, s.y - s.r * 0.4);
+        ctx.moveTo(s.x, s.y + s.r * 0.4); ctx.lineTo(s.x, s.y + s.r + 10);
+        ctx.stroke();
+        ctx.globalAlpha = 0.25 * t; ctx.fillStyle = '#ffd23f';
+        ctx.fillRect(s.x - 6, HUD, 12, s.y - HUD);
+      } else {
+        const a = Math.max(0, s.fire / 0.35);
+        const g = ctx.createLinearGradient(s.x - s.r * 0.6, 0, s.x + s.r * 0.6, 0);
+        g.addColorStop(0, 'rgba(255,210,63,0)'); g.addColorStop(0.5, 'rgba(255,250,220,1)'); g.addColorStop(1, 'rgba(255,210,63,0)');
+        ctx.globalAlpha = a; ctx.fillStyle = g;
+        ctx.fillRect(s.x - s.r * 0.6, HUD, s.r * 1.2, s.y - HUD);
+        ctx.fillStyle = '#fff8d0'; ctx.beginPath(); ctx.arc(s.x, s.y, s.r * 0.8 * a, 0, TAU); ctx.fill();
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  function drawPulses() {
+    for (const q of G.pulses) {
+      const t = 1 - q.life / q.maxLife, r = q.r + (q.maxR - q.r) * t;
+      ctx.globalAlpha = (1 - t) * 0.25; ctx.fillStyle = q.color;
+      ctx.beginPath(); ctx.arc(q.x, q.y, r, 0, TAU); ctx.fill();
+      ctx.globalAlpha = 1 - t; ctx.strokeStyle = q.color; ctx.lineWidth = 4;
+      ctx.beginPath(); ctx.arc(q.x, q.y, r, 0, TAU); ctx.stroke();
+      ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(q.x, q.y, r * 0.92, 0, TAU); ctx.stroke();
     }
     ctx.globalAlpha = 1;
   }
@@ -857,68 +1655,146 @@
     ctx.globalAlpha = 1;
   }
 
+  /** 포신 모양은 무기마다 다르다 */
+  function drawBarrel(id, s, bl, lvl, col, flash) {
+    const dark = flash ? '#fff' : col;
+    ctx.fillStyle = dark;
+    switch (id) {
+      case 'cannon':
+        if (lvl === 1) ctx.fillRect(s * 0.1, -3, bl, 6);
+        else if (lvl === 2) { ctx.fillRect(s * 0.1, -7, bl, 4); ctx.fillRect(s * 0.1, 3, bl, 4); }
+        else { ctx.fillRect(s * 0.1, -8, bl * 0.9, 4); ctx.fillRect(s * 0.1, -2, bl, 4); ctx.fillRect(s * 0.1, 4, bl * 0.9, 4); }
+        break;
+      case 'scatter': ctx.fillRect(s * 0.1, -5, bl * 0.75, 10); ctx.fillRect(s * 0.1 + bl * 0.6, -6.5, 5, 13); break;
+      case 'mortar': ctx.fillRect(s * 0.0, -6, bl * 0.55, 12); ctx.beginPath(); ctx.arc(s * 0.0 + bl * 0.55, 0, 6, 0, TAU); ctx.fill(); break;
+      case 'tesla':
+        ctx.fillRect(s * 0.1, -2, bl * 0.8, 4);
+        ctx.strokeStyle = flash ? '#fff' : '#9ad8ff'; ctx.lineWidth = 2;
+        for (let k = 0; k < 3; k++) { ctx.beginPath(); ctx.arc(s * 0.1 + bl * (0.3 + k * 0.22), 0, 5, 0, TAU); ctx.stroke(); }
+        break;
+      case 'laser': case 'rail':
+        ctx.fillRect(s * 0.1, -3, bl * 1.1, 6);
+        ctx.fillStyle = WEAPONS[WIDX[id]].color; ctx.globalAlpha = 0.85;
+        ctx.fillRect(s * 0.1 + bl * 0.6, -1.5, bl * 0.5, 3); ctx.globalAlpha = 1;
+        if (id === 'rail') { ctx.fillStyle = dark; ctx.fillRect(s * 0.1, -6, bl * 1.1, 2); ctx.fillRect(s * 0.1, 4, bl * 1.1, 2); }
+        break;
+      case 'swirl':
+        ctx.fillRect(s * 0.1, -3, bl * 0.6, 6);
+        ctx.strokeStyle = flash ? '#fff' : '#b388ff'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(s * 0.1 + bl * 0.75, 0, 6, G.now * 6, G.now * 6 + 4.5); ctx.stroke();
+        break;
+      case 'emp':
+        ctx.fillRect(s * 0.1, -2.5, bl * 0.55, 5);
+        ctx.strokeStyle = flash ? '#fff' : '#5ad1ff'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(s * 0.1 + bl * 0.55, 0, 7, -1.2, 1.2); ctx.stroke();
+        break;
+      case 'drone':
+        ctx.fillRect(s * 0.05, -7, bl * 0.6, 14);
+        ctx.fillStyle = '#7dff9e'; ctx.fillRect(s * 0.05 + 3, -4, 4, 3); ctx.fillRect(s * 0.05 + 3, 1, 4, 3);
+        break;
+      case 'orbital':
+        ctx.fillRect(s * 0.1, -2, bl * 0.7, 4);
+        ctx.strokeStyle = flash ? '#fff' : '#ffd23f'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(s * 0.1 + bl * 0.5, -8); ctx.lineTo(s * 0.1 + bl * 0.8, 0); ctx.lineTo(s * 0.1 + bl * 0.5, 8); ctx.stroke();
+        break;
+      default: ctx.fillRect(s * 0.1, -3, bl, 6);
+    }
+  }
+
+  function enemyBarrelId(e) {
+    return ({ cannon: G.level >= 9 ? 'cannon2' : 'cannon', burst: 'cannon', shotgun: 'scatter', snipe: 'rail', lob: 'mortar', pulse: 'emp', launch: 'drone', boss: 'cannon3' })[e.weapon] || 'cannon';
+  }
+
   function drawTank(t, isPlayer) {
     const s = t.size, half = s / 2;
-    const w = isPlayer ? playerWeapon() : WEAPONS[t.weaponTier] || WEAPONS[1];
-    ctx.save(); ctx.translate(t.x, t.y); ctx.rotate(t.facing);
     const body = isPlayer ? '#2fd4c8' : t.color;
     const dark = isPlayer ? '#1b6f6a' : shade(t.color, -0.4);
+    const flash = t.flash > 0;
+
+    if (!isPlayer && t.minion) {
+      // 자폭 드론
+      ctx.save(); ctx.translate(t.x, t.y); ctx.rotate(t.facing);
+      ctx.fillStyle = flash ? '#fff' : t.color;
+      ctx.beginPath(); ctx.moveTo(9, 0); ctx.lineTo(-7, -7); ctx.lineTo(-3, 0); ctx.lineTo(-7, 7); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = Math.sin(G.now * 20) > 0 ? '#fff' : '#ffd23f'; ctx.beginPath(); ctx.arc(0, 0, 2.2, 0, TAU); ctx.fill();
+      ctx.restore();
+      return;
+    }
+
+    // 차체 (이동 방향)
+    ctx.save(); ctx.translate(t.x, t.y); ctx.rotate(t.facing);
     ctx.fillStyle = dark; ctx.fillRect(-half, -half - 2, s, 4); ctx.fillRect(-half, half - 2, s, 4);
     ctx.fillStyle = '#12161e';
     for (let i = -half + 2; i < half - 2; i += 5) { ctx.fillRect(i, -half - 2, 2, 4); ctx.fillRect(i, half - 2, 2, 4); }
-    const flash = t.flash > 0;
     ctx.fillStyle = flash ? '#ffffff' : body;
     roundRect(-half + 2, -half + 2, s - 4, s - 4, 4); ctx.fill();
     ctx.fillStyle = flash ? '#ffffff' : shade(body, 0.22);
     roundRect(-half + 4, -half + 4, s - 8, (s - 8) * 0.42, 3); ctx.fill();
-    ctx.fillStyle = flash ? '#ffffff' : shade(body, -0.15);
-    ctx.beginPath(); ctx.arc(0, 0, s * 0.26, 0, 7); ctx.fill();
-
-    // 포신: 무기 종류에 맞게
-    ctx.fillStyle = flash ? '#ffffff' : dark;
-    const bl = s * 0.62 - (t.recoil > 0 ? 4 : 0);
-    const dual = w.shots === 2 || w.dual || w.kind === 'omega';
-    if (dual) {
-      ctx.fillRect(s * 0.1, -7, bl, 4);
-      ctx.fillRect(s * 0.1, 3, bl, 4);
-    } else if (w.kind === 'laser' || w.kind === 'railcore') {
-      ctx.fillRect(s * 0.1, -2.5, bl * 1.05, 5);
-      ctx.fillStyle = flash ? '#fff' : w.color;
-      ctx.globalAlpha = 0.7; ctx.fillRect(s * 0.1 + bl * 0.7, -1.5, bl * 0.35, 3); ctx.globalAlpha = 1;
-    } else if (w.kind === 'missile') {
-      ctx.fillRect(s * 0.1, -4, bl * 0.9, 8);
-    } else if (w.kind === 'swarm') {
-      ctx.fillRect(s * 0.12, -5, bl * 0.7, 3);
-      ctx.fillRect(s * 0.12, -1.5, bl * 0.85, 3);
-      ctx.fillRect(s * 0.12, 2, bl * 0.7, 3);
-    } else {
-      ctx.fillRect(s * 0.1, -3, bl, 6);
-    }
-
     ctx.strokeStyle = isPlayer ? 'rgba(53,224,216,0.6)' : 'rgba(255,255,255,0.14)';
     ctx.lineWidth = 1.4;
     roundRect(-half + 2, -half + 2, s - 4, s - 4, 4); ctx.stroke();
     ctx.restore();
 
+    // 포탑 (조준 방향)
+    ctx.save(); ctx.translate(t.x, t.y); ctx.rotate(t.aim);
+    const bl = s * 0.62 - (t.recoil > 0 ? 4 : 0);
+    if (isPlayer) {
+      const id = WEAPONS[G.weaponSel].id;
+      drawBarrel(id, s, bl, G.up.mk[G.weaponSel], dark, flash);
+    } else {
+      const id = enemyBarrelId(t);
+      if (id === 'cannon2') drawBarrel('cannon', s, bl, 2, dark, flash);
+      else if (id === 'cannon3') drawBarrel('cannon', s, bl, 3, dark, flash);
+      else drawBarrel(id, s, bl, 1, dark, flash);
+    }
+    ctx.fillStyle = flash ? '#ffffff' : shade(body, -0.15);
+    ctx.beginPath(); ctx.arc(0, 0, s * 0.27, 0, 7); ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.2)'; ctx.lineWidth = 1; ctx.stroke();
+    ctx.restore();
+
+    if (!isPlayer && t.shieldUp) {
+      ctx.save(); ctx.translate(t.x, t.y); ctx.rotate(t.aim);
+      ctx.globalAlpha = t.shieldFlash > 0 ? 1 : 0.65;
+      ctx.strokeStyle = '#8fb8ff'; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.arc(0, 0, half + 9, -1.22, 1.22); ctx.stroke();
+      ctx.globalAlpha = 0.15; ctx.fillStyle = '#8fb8ff';
+      ctx.beginPath(); ctx.arc(0, 0, half + 9, -1.22, 1.22); ctx.arc(0, 0, half + 2, 1.22, -1.22, true); ctx.fill();
+      ctx.restore(); ctx.globalAlpha = 1;
+      if (t.shieldFlash > 0) t.shieldFlash -= 1 / 60;
+    }
+    if (!isPlayer && t.jam && t.stun <= 0) {
+      const r = 175, pulse = 0.5 + 0.5 * Math.sin(G.now * 4);
+      ctx.globalAlpha = 0.06 + 0.04 * pulse; ctx.fillStyle = '#d05cff';
+      ctx.beginPath(); ctx.arc(t.x, t.y, r, 0, TAU); ctx.fill();
+      ctx.globalAlpha = 0.35; ctx.strokeStyle = '#d05cff'; ctx.lineWidth = 1; ctx.setLineDash([3, 6]);
+      ctx.beginPath(); ctx.arc(t.x, t.y, r, G.now, G.now + TAU); ctx.stroke(); ctx.setLineDash([]);
+      ctx.globalAlpha = 1;
+    }
+    if (!isPlayer && t.aiming > 0) {
+      const m = muzzle(t, t.aimLock);
+      ctx.globalAlpha = 0.35 + 0.5 * (1 - t.aiming / 0.9);
+      ctx.strokeStyle = '#ff4d5e'; ctx.lineWidth = 1; ctx.setLineDash([8, 6]);
+      ctx.beginPath(); ctx.moveTo(m.x, m.y); ctx.lineTo(m.x + Math.cos(t.aimLock) * 1100, m.y + Math.sin(t.aimLock) * 1100); ctx.stroke();
+      ctx.setLineDash([]); ctx.globalAlpha = 1;
+    }
+    if (!isPlayer && t.stun > 0) {
+      ctx.strokeStyle = '#5ad1ff'; ctx.lineWidth = 1.5; ctx.globalAlpha = 0.8;
+      ctx.beginPath(); ctx.arc(t.x, t.y, half + 5, G.now * 5, G.now * 5 + 1.5); ctx.stroke();
+      ctx.beginPath(); ctx.arc(t.x, t.y, half + 5, G.now * 5 + 3, G.now * 5 + 4.5); ctx.stroke();
+      ctx.globalAlpha = 1;
+    }
+
     if (!isPlayer && (t.hp < t.maxHp || t.boss)) {
-      const bw = Math.max(s, t.boss ? 70 : 26), pct = Math.max(0, t.hp / t.maxHp);
-      ctx.fillStyle = 'rgba(0,0,0,0.6)'; ctx.fillRect(t.x - bw / 2, t.y - half - 11, bw, 5);
+      const bw = Math.max(s, t.boss ? 90 : 26), pct = Math.max(0, t.hp / t.maxHp);
+      ctx.fillStyle = 'rgba(0,0,0,0.6)'; ctx.fillRect(t.x - bw / 2, t.y - half - 13, bw, 5);
       ctx.fillStyle = t.boss ? '#ff3fa4' : (pct > 0.5 ? '#7dff9e' : pct > 0.25 ? '#ffd23f' : '#ff4d5e');
-      ctx.fillRect(t.x - bw / 2, t.y - half - 11, bw * pct, 5);
+      ctx.fillRect(t.x - bw / 2, t.y - half - 13, bw * pct, 5);
     }
     if (t.boss) {
-      ctx.fillStyle = '#ff3fa4'; ctx.font = "700 10px 'Chakra Petch',monospace"; ctx.textAlign = 'center';
-      ctx.fillText('BOSS', t.x, t.y - half - 15);
+      ctx.fillStyle = '#ff3fa4'; ctx.font = "700 11px 'Chakra Petch',monospace"; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+      ctx.fillText('BOSS · ' + t.name, t.x, t.y - half - 18);
     }
-    if (isPlayer) {
-      const bw = 40, bh = 6, pct = Math.max(0, t.hp / t.maxHp), by = t.y - half - 13;
-      ctx.fillStyle = 'rgba(0,0,0,0.65)'; ctx.fillRect(t.x - bw / 2 - 1, by - 1, bw + 2, bh + 2);
-      ctx.fillStyle = 'rgba(255,255,255,0.10)'; ctx.fillRect(t.x - bw / 2, by, bw, bh);
-      ctx.fillStyle = pct > 0.5 ? '#35e0d8' : pct > 0.25 ? '#ffd23f' : '#ff4d5e';
-      ctx.fillRect(t.x - bw / 2, by, bw * pct, bh);
-      ctx.strokeStyle = 'rgba(53,224,216,0.55)'; ctx.lineWidth = 1; ctx.strokeRect(t.x - bw / 2 - 0.5, by - 0.5, bw + 1, bh + 1);
-    }
-    if (isPlayer && t.invuln > 0) {
+    if (isPlayer && (t.invuln > 0 || t.dashT > 0)) {
       const r = half + 8 + Math.sin(G.now * 7) * 1.5;
       const pulse = 0.45 + 0.35 * Math.abs(Math.sin(G.now * 5));
       ctx.save();
@@ -926,48 +1802,161 @@
       ctx.beginPath(); ctx.arc(t.x, t.y, r, 0, 7); ctx.fill();
       ctx.globalAlpha = pulse; ctx.strokeStyle = '#7ff6ee'; ctx.lineWidth = 2;
       ctx.beginPath(); ctx.arc(t.x, t.y, r, 0, 7); ctx.stroke();
-      ctx.globalAlpha = pulse * 0.9; ctx.fillStyle = '#dffffb';
-      for (let i = 0; i < 6; i++) {
-        const a = G.now * 1.5 + i * Math.PI / 3;
-        ctx.beginPath(); ctx.arc(t.x + Math.cos(a) * r, t.y + Math.sin(a) * r, 1.6, 0, 7); ctx.fill();
-      }
       ctx.restore(); ctx.globalAlpha = 1;
+    }
+    if (isPlayer) {
+      const bw = 40, bh = 5, by = t.y - half - 14;
+      const pct = Math.max(0, t.hp / t.maxHp);
+      ctx.fillStyle = 'rgba(0,0,0,0.65)'; ctx.fillRect(t.x - bw / 2 - 1, by - 1, bw + 2, bh + 5);
+      ctx.fillStyle = pct > 0.5 ? '#35e0d8' : pct > 0.25 ? '#ffd23f' : '#ff4d5e';
+      ctx.fillRect(t.x - bw / 2, by, bw * pct, bh);
+      ctx.fillStyle = t.jammed ? '#d05cff' : '#5ad1ff';
+      ctx.fillRect(t.x - bw / 2, by + bh + 1, bw * Math.max(0, t.en / t.maxEn), 2);
+      // 레일건 충전 게이지
+      if (t.railCharge > 0) {
+        ctx.strokeStyle = '#7cf7ff'; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.arc(t.x, t.y, half + 12, -Math.PI / 2, -Math.PI / 2 + TAU * t.railCharge); ctx.stroke();
+        const m = muzzle(t, t.aim);
+        ctx.globalAlpha = 0.25 + 0.5 * t.railCharge; ctx.lineWidth = 1; ctx.setLineDash([4, 6]);
+        ctx.beginPath(); ctx.moveTo(m.x, m.y); ctx.lineTo(m.x + Math.cos(t.aim) * 1200, m.y + Math.sin(t.aim) * 1200); ctx.stroke();
+        ctx.setLineDash([]); ctx.globalAlpha = 1;
+      }
     }
   }
 
+  function drawReticle() {
+    if (!G.mouse.on || !G.player) return;
+    const id = WEAPONS[G.weaponSel].id;
+    let { x, y } = G.mouse;
+    let r = 9;
+    if (id === 'mortar' || id === 'orbital') {
+      const ap = aimPoint(id === 'mortar' ? 110 : 60, id === 'mortar' ? 480 : 900);
+      x = ap.x; y = ap.y;
+      r = id === 'mortar' ? (mk('mortar') >= 2 ? 84 : 70) : (mk('orbital') >= 2 ? 120 : 95);
+      ctx.globalAlpha = 0.35; ctx.strokeStyle = WEAPONS[G.weaponSel].color; ctx.lineWidth = 1; ctx.setLineDash([4, 4]);
+      ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.stroke(); ctx.setLineDash([]);
+      r = 9;
+    }
+    ctx.globalAlpha = 0.85; ctx.strokeStyle = WEAPONS[G.weaponSel].color; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(x, y, r, 0, TAU);
+    ctx.moveTo(x - r - 5, y); ctx.lineTo(x - r + 3, y); ctx.moveTo(x + r - 3, y); ctx.lineTo(x + r + 5, y);
+    ctx.moveTo(x, y - r - 5); ctx.lineTo(x, y - r + 3); ctx.moveTo(x, y + r - 3); ctx.lineTo(x, y + r + 5);
+    ctx.stroke(); ctx.globalAlpha = 1;
+  }
+
   function renderHUD() {
-    ctx.fillStyle = 'rgba(7,10,16,0.9)'; ctx.fillRect(0, 0, W, HUD);
-    const p = G.player; const hpPct = p ? Math.max(0, p.hp / p.maxHp) : 0;
-    ctx.fillStyle = 'rgba(255,255,255,0.06)'; ctx.fillRect(0, 0, W, 4);
-    ctx.fillStyle = hpPct > 0.5 ? '#35e0d8' : hpPct > 0.25 ? '#ffd23f' : '#ff4d5e';
-    ctx.fillRect(0, 0, W * hpPct, 4);
+    ctx.fillStyle = 'rgba(7,10,16,0.92)'; ctx.fillRect(0, 0, W, HUD);
     ctx.strokeStyle = 'rgba(53,224,216,0.28)';
     ctx.beginPath(); ctx.moveTo(0, HUD - 0.5); ctx.lineTo(W, HUD - 0.5); ctx.stroke();
 
     ctx.textBaseline = 'middle';
     ctx.textAlign = 'left'; ctx.fillStyle = '#35e0d8'; ctx.font = "700 20px 'Chakra Petch',monospace";
-    ctx.fillText('LV ' + String(G.level).padStart(2, '0'), 16, 26);
-
-    const w = playerWeapon();
-    const boosted = G.weaponBoostUntil > G.now;
-    const ew = WEAPONS[enemyWeaponTier()];
-    ctx.font = "600 13px 'Chakra Petch',monospace";
-    ctx.fillStyle = boosted ? '#ffd23f' : '#35e0d8';
-    ctx.fillText('ME ▸ ' + w.name + (boosted ? ' +' : ''), 96, 27);
-    ctx.fillStyle = '#ff8a94';
-    ctx.fillText('FOE ▸ ' + ew.name, 250, 27);
-
+    ctx.fillText('LV ' + String(G.level).padStart(2, '0'), 16, 24);
     const remain = (G.totalEnemies || 0) - (G.killed || 0);
     ctx.fillStyle = '#9fb0c0'; ctx.font = "600 13px 'Chakra Petch',monospace";
-    ctx.fillText('LEFT ' + Math.max(0, remain), 96, 10);
+    ctx.fillText('HOSTILES ' + Math.max(0, remain), 100, 17);
+    if (overdrive()) {
+      ctx.fillStyle = '#ffd23f';
+      ctx.fillText('OVERDRIVE ' + Math.ceil(G.overdriveUntil - G.now) + 's', 100, 33);
+    } else if (G.player && G.player.jammed) {
+      ctx.fillStyle = '#d05cff'; ctx.fillText('JAMMED — EN DRAIN', 100, 33);
+    }
 
     ctx.textAlign = 'center'; ctx.fillStyle = '#ffffff'; ctx.font = "700 22px 'Chakra Petch',monospace";
-    ctx.fillText(G.score.toLocaleString(), W / 2, 22);
+    ctx.fillText(G.score.toLocaleString(), W / 2, 20);
     ctx.fillStyle = '#6b7688'; ctx.font = "500 11px 'Chakra Petch',monospace";
     ctx.fillText('BEST ' + G.hiScore.toLocaleString(), W / 2, 37);
 
     const lv = Math.max(0, G.lives);
-    for (let i = 0; i < lv; i++) miniTank(W - 22 - i * 24, 24);
+    for (let i = 0; i < Math.min(lv, 5); i++) miniTank(W - 22 - i * 24, 23);
+    if (lv > 5) { ctx.textAlign = 'right'; ctx.fillStyle = '#35e0d8'; ctx.font = "700 13px 'Chakra Petch',monospace"; ctx.fillText('×' + lv, W - 130, 24); }
+  }
+
+  /** 하단 무기 슬롯 띠: 체력/에너지/대시 + 무기 10칸 */
+  function renderBar() {
+    const y0 = H;
+    ctx.fillStyle = '#070a10'; ctx.fillRect(0, y0, W, BAR);
+    ctx.strokeStyle = 'rgba(53,224,216,0.28)';
+    ctx.beginPath(); ctx.moveTo(0, y0 + 0.5); ctx.lineTo(W, y0 + 0.5); ctx.stroke();
+    const p = G.player;
+    if (!p) return;
+    ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+    const bars = [
+      ['HP', p.hp / p.maxHp, p.hp / p.maxHp > 0.5 ? '#35e0d8' : p.hp / p.maxHp > 0.25 ? '#ffd23f' : '#ff4d5e', Math.ceil(p.hp)],
+      ['EN', p.en / p.maxEn, p.jammed ? '#d05cff' : '#5ad1ff', Math.floor(p.en)],
+      ['DASH', p.dashCd > 0 ? 1 - p.dashCd / G.up.dashCd : 1, p.dashCd > 0 ? '#3d5a66' : '#7dff9e', p.dashCd > 0 ? '' : 'READY'],
+    ];
+    bars.forEach(([lbl, pct, col, val], k) => {
+      const yy = y0 + 12 + k * 17;
+      ctx.fillStyle = '#6b7688'; ctx.font = "600 10px 'Chakra Petch',monospace";
+      ctx.fillText(lbl, 12, yy);
+      ctx.fillStyle = 'rgba(255,255,255,0.07)'; ctx.fillRect(46, yy - 4, 112, 8);
+      ctx.fillStyle = col; ctx.fillRect(46, yy - 4, 112 * clamp(pct, 0, 1), 8);
+      ctx.fillStyle = '#cfd8e3'; ctx.fillText(String(val), 164, yy);
+    });
+
+    const sx = 202, sw = 74.5;
+    WEAPONS.forEach((w, i) => {
+      const x = sx + i * sw, y = y0 + 6, h = BAR - 12, ww = sw - 5;
+      const open = unlocked(i), sel = i === G.weaponSel;
+      ctx.fillStyle = sel ? 'rgba(53,224,216,0.12)' : 'rgba(255,255,255,0.03)';
+      roundRect(x, y, ww, h, 5); ctx.fill();
+      ctx.strokeStyle = sel ? w.color : 'rgba(255,255,255,0.08)'; ctx.lineWidth = sel ? 2 : 1;
+      roundRect(x + 0.5, y + 0.5, ww - 1, h - 1, 5); ctx.stroke();
+      ctx.textAlign = 'left'; ctx.font = "600 9px 'Chakra Petch',monospace";
+      ctx.fillStyle = '#6b7688'; ctx.fillText(w.key, x + 5, y + 8);
+      if (!open) {
+        ctx.textAlign = 'center'; ctx.fillStyle = '#3c4555'; ctx.font = "700 10px 'Chakra Petch',monospace";
+        ctx.fillText('LV ' + w.unlock, x + ww / 2, y + h / 2 + 4);
+        return;
+      }
+      const lvl = G.up.mk[i];
+      for (let k = 0; k < 3; k++) {
+        ctx.fillStyle = k < lvl ? w.color : 'rgba(255,255,255,0.12)';
+        ctx.fillRect(x + ww - 22 + k * 6, y + 5, 4, 4);
+      }
+      weaponGlyph(w.id, x + ww / 2, y + 22, w.color);
+      ctx.textAlign = 'center'; ctx.font = "700 10px 'Chakra Petch',monospace";
+      ctx.fillStyle = sel ? '#fff' : '#9fb0c0';
+      ctx.fillText(w.short, x + ww / 2, y + h - 7);
+      const cdMax = w.cd || 0.001;
+      const cdPct = p.cds[i] > 0 ? p.cds[i] / (cdMax / G.up.fireRate) : 0;
+      const cost = w.cost * (overdrive() ? 0.5 : 1);
+      if (cost > 0 && p.en < cost) { ctx.fillStyle = 'rgba(0,0,0,0.55)'; roundRect(x, y, ww, h, 5); ctx.fill(); }
+      if (cdPct > 0) { ctx.fillStyle = 'rgba(0,0,0,0.5)'; ctx.fillRect(x + 1, y + 1, ww - 2, (h - 2) * clamp(cdPct, 0, 1)); }
+    });
+  }
+
+  function weaponGlyph(id, x, y, c) {
+    ctx.save(); ctx.translate(x, y);
+    ctx.strokeStyle = c; ctx.fillStyle = c; ctx.lineWidth = 1.6;
+    switch (id) {
+      case 'cannon': ctx.beginPath(); ctx.arc(-6, 0, 4, 0, TAU); ctx.fill(); ctx.fillRect(-2, -1.5, 12, 3); break;
+      case 'scatter': for (let k = -2; k <= 2; k++) { ctx.beginPath(); ctx.arc(6, k * 3.5, 1.5, 0, TAU); ctx.fill(); } ctx.fillRect(-9, -2, 9, 4); break;
+      case 'mortar': ctx.beginPath(); ctx.moveTo(-10, 5); ctx.quadraticCurveTo(0, -14, 10, 5); ctx.stroke(); ctx.beginPath(); ctx.arc(10, 5, 2.5, 0, TAU); ctx.fill(); break;
+      case 'tesla': ctx.beginPath(); ctx.moveTo(-10, -4); ctx.lineTo(-3, 3); ctx.lineTo(1, -3); ctx.lineTo(10, 4); ctx.stroke(); break;
+      case 'laser': ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-11, 0); ctx.lineTo(11, 0); ctx.stroke(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1; ctx.stroke(); break;
+      case 'swirl': ctx.beginPath(); for (let s = 0; s < 30; s++) { const a = s * 0.42, r = s * 0.3; ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r); } ctx.stroke(); break;
+      case 'emp': ctx.beginPath(); ctx.arc(0, 0, 3, 0, TAU); ctx.fill(); ctx.beginPath(); ctx.arc(0, 0, 7, 0, TAU); ctx.stroke(); ctx.globalAlpha = 0.5; ctx.beginPath(); ctx.arc(0, 0, 10, 0, TAU); ctx.stroke(); break;
+      case 'drone': ctx.beginPath(); ctx.moveTo(-7, -6); ctx.lineTo(7, 6); ctx.moveTo(7, -6); ctx.lineTo(-7, 6); ctx.stroke(); for (const [a, b] of [[-7, -6], [7, 6], [7, -6], [-7, 6]]) { ctx.beginPath(); ctx.arc(a, b, 2.5, 0, TAU); ctx.fill(); } break;
+      case 'rail': ctx.fillRect(-11, -4, 22, 2); ctx.fillRect(-11, 2, 22, 2); ctx.globalAlpha = 0.7; ctx.fillRect(-11, -1, 22, 2); break;
+      case 'orbital': ctx.beginPath(); ctx.arc(0, 2, 6, 0, TAU); ctx.stroke(); ctx.beginPath(); ctx.moveTo(0, -10); ctx.lineTo(0, 2); ctx.stroke(); ctx.beginPath(); ctx.moveTo(-3, -9); ctx.lineTo(3, -9); ctx.stroke(); break;
+    }
+    ctx.restore();
+  }
+
+  function renderToasts() {
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    G.toasts.forEach((t, k) => {
+      const a = Math.min(1, t.life / 0.4, (t.maxLife - t.life) / 0.15 + 0.2);
+      ctx.globalAlpha = clamp(a, 0, 1);
+      ctx.font = k === 0 ? "700 16px 'Chakra Petch',monospace" : "600 13px 'Chakra Petch',monospace";
+      ctx.fillStyle = 'rgba(0,0,0,0.55)';
+      const tw = ctx.measureText(t.text).width + 20;
+      ctx.fillRect(W / 2 - tw / 2, HUD + 18 + k * 24, tw, 21);
+      ctx.fillStyle = t.color; ctx.fillText(t.text, W / 2, HUD + 29 + k * 24);
+    });
+    ctx.globalAlpha = 1;
   }
 
   function miniTank(x, y) {
@@ -991,56 +1980,113 @@
     ctx.stroke();
     for (const w of G.walls) drawWall(w);
     for (const pu of G.powerups) drawPowerup(pu);
+    drawPulses();
+    drawVortices();
     drawParticles();
     for (const e of G.enemies) drawTank(e, false);
     if (G.player) drawTank(G.player, true);
+    drawShells();
     drawBeams();
     for (const b of G.ebullets) drawBullet(b);
     for (const b of G.bullets) drawBullet(b);
+    drawDrones();
+    drawStrikes();
+    if (G.screen === 'playing') drawReticle();
     ctx.restore();
     renderHUD();
+    renderBar();
+    if (G.screen === 'playing') renderToasts();
   }
 
   function loop(t) {
+    requestAnimationFrame(loop);
     const now = t / 1000;
     let dt = now - G.last; G.last = now;
     if (dt > 0.05) dt = 0.05; if (dt < 0) dt = 0;
     G.now = now;
     if (G.screen === 'playing' && !G.paused && G.player) update(dt);
     render();
-    requestAnimationFrame(loop);
   }
 
   /* ---------- input / UI ---------- */
+  function selectWeapon(i) {
+    if (!G.player || i < 0 || i >= WEAPONS.length || !unlocked(i) || i === G.weaponSel) return;
+    G.weaponSel = i; G.player.railCharge = 0;
+    sfx('swap');
+  }
+  function cycleWeapon(dir) {
+    const n = WEAPONS.length;
+    for (let k = 1; k <= n; k++) {
+      const i = (G.weaponSel + dir * k + n * 2) % n;
+      if (unlocked(i)) { selectWeapon(i); return; }
+    }
+  }
+
   function onKey(e, down) {
     const k = e.key;
     const map = {
       ArrowLeft: 'left', ArrowRight: 'right', ArrowUp: 'up', ArrowDown: 'down',
       a: 'left', d: 'right', w: 'up', s: 'down', A: 'left', D: 'right', W: 'up', S: 'down',
     };
+    if (G.screen === 'clear' && down && ['1', '2', '3'].includes(k)) { pickCard(+k - 1); e.preventDefault(); return; }
     if (k === ' ' || k === 'Spacebar') { G.keys.fire = down; e.preventDefault(); return; }
     if (map[k] !== undefined) { G.keys[map[k]] = down; e.preventDefault(); return; }
-    if (down && (k === 'p' || k === 'P' || k === 'Escape')) {
+    if (!down) return;
+    if (G.screen === 'playing') {
+      if (k === 'Shift') { tryDash(); e.preventDefault(); return; }
+      if (/^[0-9]$/.test(k)) { selectWeapon(k === '0' ? 9 : +k - 1); e.preventDefault(); return; }
+      if (k === 'q' || k === 'Q') { cycleWeapon(-1); return; }
+      if (k === 'e' || k === 'E') { cycleWeapon(1); return; }
+    }
+    if (k === 'p' || k === 'P' || k === 'Escape') {
       if (G.screen === 'playing') setScreen('pause');
       else if (G.screen === 'pause') { setScreen('playing'); G.last = performance.now() / 1000; }
       e.preventDefault();
     }
   }
 
+  function canvasPos(ev) {
+    const r = canvas.getBoundingClientRect();
+    return { x: (ev.clientX - r.left) * (canvas.width / r.width), y: (ev.clientY - r.top) * (canvas.height / r.height) };
+  }
+  canvas.addEventListener('mousemove', (ev) => {
+    const q = canvasPos(ev);
+    G.mouse.x = q.x; G.mouse.y = Math.min(q.y, H - 4); G.mouse.on = q.y < H;
+  });
+  canvas.addEventListener('mouseleave', () => { G.mouse.on = false; G.mouse.down = false; });
+  canvas.addEventListener('mousedown', (ev) => {
+    ensureAudio();
+    const q = canvasPos(ev);
+    if (G.screen !== 'playing') return;
+    if (q.y >= H) {
+      // 하단 슬롯 클릭으로 무기 선택
+      const i = Math.floor((q.x - 202) / 74.5);
+      if (ev.button === 0) selectWeapon(i);
+      return;
+    }
+    if (ev.button === 0) G.mouse.down = true;
+    else if (ev.button === 2) tryDash();
+  });
+  window.addEventListener('mouseup', (ev) => { if (ev.button === 0) G.mouse.down = false; });
+  canvas.addEventListener('contextmenu', (ev) => ev.preventDefault());
+  canvas.addEventListener('wheel', (ev) => {
+    if (G.screen !== 'playing') return;
+    ev.preventDefault();
+    cycleWeapon(ev.deltaY > 0 ? 1 : -1);
+  }, { passive: false });
+  window.addEventListener('blur', () => { G.keys = {}; G.mouse.down = false; });
+
   function startGame() {
     ensureAudio();
-    G.score = 0; G.lives = 3; G.weaponBoostUntil = 0;
+    G.score = 0; G.lives = 3; G.up = freshUpgrades(); G.weaponSel = 0; G.player = null;
     setupLevel(1);
     setScreen('playing');
     G.last = performance.now() / 1000;
   }
 
+  document.getElementById('roster').innerHTML = WEAPONS.map(w =>
+    `<div><i style="color:${w.color}">${w.key} · ${w.name}</i>LV ${w.unlock}+</div>`).join('');
   document.getElementById('btn-start').onclick = startGame;
-  document.getElementById('btn-next').onclick = () => {
-    setupLevel(G.level + 1);
-    setScreen('playing');
-    G.last = performance.now() / 1000;
-  };
   document.getElementById('btn-retry').onclick = startGame;
   document.getElementById('btn-again').onclick = startGame;
   document.getElementById('btn-resume').onclick = () => { setScreen('playing'); G.last = performance.now() / 1000; };
@@ -1050,28 +2096,29 @@
 
   // 디버그/검증용
   window.__SS = {
-    jump(level) {
+    jump(level, mkAll) {
       ensureAudio();
       if (G.screen === 'start' || !G.player) { G.score = 0; G.lives = 3; }
-      G.weaponBoostUntil = 0;
+      if (!G.up) G.up = freshUpgrades();
+      if (mkAll) G.up.mk = G.up.mk.map(() => Math.max(1, Math.min(3, mkAll | 0)));
+      G.player = null;
       setupLevel(Math.max(1, Math.min(20, level | 0)));
       setScreen('playing');
       G.last = performance.now() / 1000;
-      return {
-        level: G.level,
-        player: playerWeapon().name,
-        enemy: WEAPONS[enemyWeaponTier()].name,
-        enemyTiers: G.enemies.map(e => WEAPONS[e.weaponTier].name),
-      };
+      return this.info();
     },
+    select(i) { selectWeapon(i); return WEAPONS[G.weaponSel].name; },
     info() {
       return {
         level: G.level,
         screen: G.screen,
-        player: G.player ? playerWeapon().name : null,
-        enemy: WEAPONS[enemyWeaponTier()].name,
+        weapon: G.player ? WEAPONS[G.weaponSel].name : null,
+        unlocked: WEAPONS.filter((w, i) => G.up && unlocked(i)).map(w => w.name),
+        enemies: G.enemies.map(e => e.type),
+        hp: G.player && Math.round(G.player.hp), en: G.player && Math.round(G.player.en),
       };
     },
+    G,
   };
 
   G.last = performance.now() / 1000;
